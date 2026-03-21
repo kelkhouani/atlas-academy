@@ -1,0 +1,39 @@
+:root {
+  --zgh-green: #99cc33;
+  --zgh-yellow: #ffe513;
+  --zgh-red: #cc0033;
+  --zgh-blue: #0099cc;
+  --zgh-gray: #e5e5e5;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #ffffff;
+  color: #3c3c3c;
+}
+
+/* The magic container */
+.app-container {
+  width: 95%;
+  margin: 0 auto;
+}
+
+@media (min-width: 900px) {
+  .app-container {
+    min-width: 850px; /* Forces it to be at least 850px wide on desktop */
+    max-width: 1200px; /* Lets it breathe on large monitors */
+  }
+}
+
+button {
+  cursor: pointer;
+  transition: all 0.1s ease;
+  font-family: inherit;
+}
+
+button:active {
+  transform: translateY(2px);
+  filter: brightness(0.9);
+}
+

@@ -1,0 +1,20 @@
+#root {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 1000px; /* Increased from 500/600px */
+  margin: 0 auto;
+  padding: 20px;
+  transition: max-width 0.3s ease;
+}
+
+/* On very large screens, we can even go wider */
+@media (min-width: 1200px) {
+  .app-container {
+    max-width: 1200px;
+  }
+}
