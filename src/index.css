@@ -6,11 +6,27 @@
   --zgh-gray: #e5e5e5;
 }
 
+#root {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box; /* Cruciaal: telt padding niet op bij breedte */
+}
+
 body {
   margin: 0;
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   background-color: #ffffff;
   color: #3c3c3c;
+}
+
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden; /* Blokkeert horizontaal scrollen op de hele pagina */
+  margin: 0;
+  padding: 0;
 }
 
 /* The magic container */
