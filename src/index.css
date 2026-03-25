@@ -4,6 +4,11 @@
   --zgh-red: #cc0033;
   --zgh-blue: #0099cc;
   --zgh-gray: #e5e5e5;
+  --zgh-gray-dark: #b0b0b0;
+  --zgh-surface: #f7f7f7;
+  --zgh-radius-sm: 12px;
+  --zgh-radius-md: 20px;
+  --zgh-radius-lg: 25px;
 }
 
 #root {
