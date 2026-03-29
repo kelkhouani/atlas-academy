@@ -222,7 +222,7 @@ function App() {
           <div className="home-hero__row">
             <div>
               <h2 className="home-hero__title">Salam, {userName}! {userAvatar}</h2>
-              <p className="home-hero__subtitle">Level {currentLevel} · {streak} dagen streak 🔥</p>
+              <p className="home-hero__subtitle">Level {currentLevel} · {streak} {streak === 1 ? 'dag' : 'dagen'} streak 🔥</p>
             </div>
             <div>
               <div className="home-hero__xp-label">NOG {xpToNextLevel} XP</div>
