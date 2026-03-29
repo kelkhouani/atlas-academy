@@ -1,11 +1,45 @@
 :root {
-  --zgh-green: #99cc33;
-  --zgh-yellow: #ffe513;
-  --zgh-red: #cc0033;
-  --zgh-blue: #0099cc;
-  --zgh-gray: #e5e5e5;
-  --zgh-gray-dark: #b0b0b0;
-  --zgh-surface: #f7f7f7;
+  /* ── Atlas Lion palette ──────────────────────────────────────────────────── */
+  /* Primary: warm amber-orange (lion body) */
+  --atlas-primary:       #D4681E;
+  --atlas-primary-dark:  #A84E14;
+  --atlas-primary-light: #F08040;
+
+  /* Gold (lion highlights & XP) */
+  --atlas-gold:          #F5C300;
+  --atlas-gold-light:    #FFE066;
+
+  /* Brown (mane & dark UI) */
+  --atlas-brown:         #7B2D00;
+  --atlas-brown-mid:     #A05020;
+
+  /* Warm background & borders */
+  --atlas-cream:         #FFF8F0;
+  --atlas-surface:       #FFF2E4;
+  --atlas-gray:          #EDE0D4;
+  --atlas-gray-dark:     #C4A898;
+
+  /* Semantic: success / error */
+  --atlas-green:         #5AAD2A;
+  --atlas-green-light:   #D7F5B0;
+  --atlas-red:           #CC2200;
+  --atlas-red-light:     #FFE0DC;
+
+  /* Amazigh flag colours */
+  --flag-blue:           #3EB3E0;
+  --flag-green:          #5EBB47;
+  --flag-yellow:         #FFD740;
+  --flag-red:            #CC1133;  /* Yaz symbol */
+
+  /* Legacy aliases so existing code keeps working during transition */
+  --zgh-green:  var(--atlas-green);
+  --zgh-yellow: var(--atlas-gold);
+  --zgh-red:    var(--atlas-red);
+  --zgh-blue:   var(--atlas-primary);
+  --zgh-gray:   var(--atlas-gray);
+  --zgh-gray-dark: var(--atlas-gray-dark);
+  --zgh-surface:   var(--atlas-surface);
+
   --zgh-radius-sm: 12px;
   --zgh-radius-md: 20px;
   --zgh-radius-lg: 25px;
@@ -23,7 +57,7 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: #ffffff;
+  background-color: var(--atlas-cream);
   color: #3c3c3c;
 }
 
@@ -34,16 +68,27 @@ html, body {
   padding: 0;
 }
 
-/* The magic container */
+/* Responsive content container */
 .app-container {
-  width: 95%;
+  width: 100%;
+  max-width: 900px;
   margin: 0 auto;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 640px) {
   .app-container {
-    min-width: 850px; /* Forces it to be at least 850px wide on desktop */
-    max-width: 1200px; /* Lets it breathe on large monitors */
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-container {
+    max-width: 1100px;
+    padding-left: 48px;
+    padding-right: 48px;
   }
 }
 

@@ -1,0 +1,204 @@
+/* ─── Map container ──────────────────────────────────────────────────────────── */
+.lesson-map {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  /* padding & maxWidth stay inline — they're responsive JS values */
+}
+
+/* ─── Unit banner ────────────────────────────────────────────────────────────── */
+.unit-banner {
+  background-color: #F5E8D4;
+  border: 2px solid #E0C9A4;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-top: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.unit-banner--first {
+  margin-top: 12px;
+}
+
+.unit-banner--locked {
+  background-color: #EDE8E4;
+  border-color: #D8D0C8;
+}
+
+.unit-banner__eyebrow {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--atlas-brown-mid);
+}
+
+.unit-banner--locked .unit-banner__eyebrow {
+  color: #B0A49C;
+}
+
+.unit-banner__name {
+  font-size: 17px;
+  font-weight: 800;
+  margin-top: 2px;
+  color: var(--atlas-brown);
+}
+
+.unit-banner--locked .unit-banner__name {
+  color: #C0B4AC;
+}
+
+.unit-banner__guide-btn {
+  background: white;
+  border: 2px solid var(--atlas-primary);
+  border-radius: 12px;
+  padding: 6px 14px;
+  color: var(--atlas-primary);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+  font-family: inherit;
+}
+
+/* ─── Node rows ──────────────────────────────────────────────────────────────── */
+.map-nodes {
+  padding-top: 16px;
+}
+
+.map-node-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 6px;
+  /* height stays inline — uses ROW_H constant */
+}
+
+.map-node-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  /* transform translateX stays inline — JS-calculated offset */
+}
+
+/* ─── START bounce badge ─────────────────────────────────────────────────────── */
+.start-badge {
+  height: 24px;
+  background: white;
+  border: 2px solid var(--atlas-primary);
+  border-radius: 10px;
+  padding: 0 12px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--atlas-primary);
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+}
+
+.start-badge--spacer {
+  height: 24px;
+  /* invisible placeholder so nodes without a badge stay aligned */
+  visibility: hidden;
+}
+
+/* node circle — size, color, and shadow are all JS-driven, stay inline */
+
+/* ─── Tooltip overlay ────────────────────────────────────────────────────────── */
+.tooltip-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 998;
+}
+
+/* ─── Tooltip card ───────────────────────────────────────────────────────────── */
+.tooltip-card {
+  position: absolute;
+  background-color: white;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14);
+  border: 2px solid var(--zgh-gray);
+  padding: 18px 20px 16px;
+  z-index: 999;
+  /* left, top, width stay inline — JS-calculated for centering & positioning */
+}
+
+.tooltip-card__unit-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--atlas-primary);
+  margin-bottom: 3px;
+}
+
+.tooltip-card__sub-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: #222;
+  margin-bottom: 14px;
+}
+
+.tooltip-card__locked {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #aaa;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ─── Tooltip buttons ────────────────────────────────────────────────────────── */
+.tooltip-card__btn {
+  width: 100%;
+  padding: 11px 16px;
+  border-radius: 14px;
+  border: none;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: 0.3px;
+  font-family: inherit;
+}
+
+.tooltip-card__btn--start {
+  background: linear-gradient(135deg, var(--atlas-brown), var(--atlas-primary));
+  color: white;
+}
+
+.tooltip-card__btn--repeat {
+  background-color: white;
+  border: 2px solid var(--atlas-primary) !important;
+  color: var(--atlas-primary);
+}
+
+/* ─── Tooltip arrow (always points up toward the node) ───────────────────────── */
+.tooltip-arrow {
+  position: absolute;
+  top: -12px;
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 12px solid var(--zgh-gray);
+  /* left stays inline — JS-calculated to aim at node */
+}
+
+.tooltip-arrow__fill {
+  position: absolute;
+  top: -9px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid white;
+  /* left stays inline */
+}

@@ -2,9 +2,47 @@ import { useEffect, useState } from 'react';
 import { fetchLessons } from './DataLoader';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { Lock, Star, CheckCircle, X, ChevronRight, Trophy, Shield, Home, BookOpen, Gamepad2, User, Volume2 } from 'lucide-react';
+import { Flame, Home, BookOpen, Gamepad2, User, Zap, Medal, CheckCircle2 } from 'lucide-react';
+import LessonView from './components/LessonView';
+import LessonMap from './components/LessonMap';
+import './App.css';
 
-// ─── Fix 4: playAudio helper ─────────────────────────────────────────────────
+// ─── Amazigh flag — exact official SVG ───────────────────────────────────────
+function AmazighFlag({ height = 20 }) {
+  const w = Math.round(height * 1.5);
+  return (
+    <svg
+      width={w} height={height}
+      viewBox="0 0 900 600"
+      style={{ borderRadius: 3, display: 'block', flexShrink: 0 }}
+      aria-label="Amazigh flag"
+    >
+      <rect fill="#0090DA" width="900" height="200" />
+      <rect fill="#78BE20" y="200" width="900" height="200" />
+      <rect fill="#FEDD00" y="400" width="900" height="200" />
+      {/* Yaz symbol — vertical bar */}
+      <polygon fill="#CC0033" points="429.675,477.64 458.13,507.721 466.26,97.9695 450,80.8966" />
+      {/* Yaz symbol — lower arc */}
+      <path fill="#CC0033" d="M657.315 515.851l54.4711 -23.5769c-104.877,-104.064 -165.039,-142.275 -264.225,-144.714 -126.015,8.94308 -208.128,59.3489 -243.087,159.348l24.3898 -4.87785c99.9991,-123.576 156.909,-109.755 220.323,-117.072 67.4791,2.43908 136.584,46.3409 208.128,130.893l0 -0.000307692z" />
+      {/* Yaz symbol — upper arc */}
+      <path fill="#CC0033" d="M289.839 93.0917l-52.032 13.8209c50.4058,89.4298 122.763,143.901 215.445,147.966 122.763,0.812923 193.494,-82.1129 242.274,-156.909l-41.4631 12.1951c-78.8609,111.381 -164.226,115.446 -202.437,109.755 -64.2271,-4.87785 -117.072,-57.7231 -161.787,-126.828z" />
+    </svg>
+  );
+}
+
+// ─── Atlas Lion mascot ────────────────────────────────────────────────────────
+function LionMascot({ size = 80 }) {
+  return (
+    <img
+      src="/lion.png"
+      alt="Atlas Lion"
+      className="lion-mascot"
+      style={{ height: size, width: 'auto' }}
+    />
+  );
+}
+
+// ─── Audio helper ─────────────────────────────────────────────────────────────
 function playAudio(slug) {
   if (!slug) return;
   const filename = slug.endsWith('.mp3') ? slug : `${slug}.mp3`;
@@ -12,47 +50,7 @@ function playAudio(slug) {
   audio.play().catch(() => {});
 }
 
-// ─── Fix 5: SpeakerButton component ──────────────────────────────────────────
-function SpeakerButton({ slug }) {
-  if (!slug) return null;
-  return (
-    <button
-      onClick={() => playAudio(slug)}
-      style={{
-        background: 'none', border: 'none', cursor: 'pointer',
-        padding: '4px 6px', borderRadius: '8px', color: 'var(--zgh-blue)',
-        display: 'inline-flex', alignItems: 'center', flexShrink: 0,
-        opacity: 0.8,
-      }}
-      aria-label="Hoor de uitspraak"
-      title="Hoor de uitspraak"
-    >
-      <Volume2 size={20} />
-    </button>
-  );
-}
-
-// ─── Fix 2: parsePrompt — renders Image_Tag tokens as <img> elements ─────────
-function parsePrompt(text) {
-  if (!text) return text;
-  const parts = text.split(/(Image_Tag:\S+)/g);
-  return parts.map((part, i) => {
-    if (part.startsWith('Image_Tag:')) {
-      const filename = part.replace('Image_Tag:', '');
-      return (
-        <img
-          key={i}
-          src={`/images/${filename}`}
-          alt={filename.replace(/\.[^.]+$/, '')}
-          style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 12, margin: '8px auto', display: 'block' }}
-        />
-      );
-    }
-    return part;
-  });
-}
-
-// ─── Fix 3: streak helpers ────────────────────────────────────────────────────
+// ─── Streak helpers ───────────────────────────────────────────────────────────
 function getTodayString() {
   return new Date().toISOString().slice(0, 10);
 }
@@ -67,7 +65,7 @@ function calcNewStreak(currentStreak, lastStreakDate) {
 }
 
 function App() {
-  // --- 1. STATE MANAGEMENT ---
+  // ── State ──────────────────────────────────────────────────────────────────
   const [allLessons, setAllLessons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState('map');
@@ -79,13 +77,10 @@ function App() {
   const [isCorrect, setIsCorrect] = useState(null);
   const [isFinished, setIsFinished] = useState(false);
   const [hearts, setHearts] = useState(3);
-  // Fix 1: track the correct answer to show on wrong response
   const [correctAnswerToShow, setCorrectAnswerToShow] = useState(null);
 
-  // App Shell & User States
   const [activeTab, setActiveTab] = useState('home');
   const [xp, setXp] = useState(parseInt(localStorage.getItem('zgh_xp')) || 0);
-  // Fix 3: streak now tracked with a date string
   const [streak, setStreak] = useState(parseInt(localStorage.getItem('zgh_streak')) || 0);
   const [lastStreakDate, setLastStreakDate] = useState(localStorage.getItem('zgh_lastStreakDate') || '');
   const [userName, setUserName] = useState(localStorage.getItem('zgh_user_name') || 'Leerling');
@@ -96,7 +91,7 @@ function App() {
     JSON.parse(localStorage.getItem('zgh_completed_subunits')) || []
   );
 
-  // --- 2. DATA LADEN ---
+  // ── Data loading ───────────────────────────────────────────────────────────
   useEffect(() => {
     fetchLessons().then(data => {
       setAllLessons(data);
@@ -107,7 +102,7 @@ function App() {
     });
   }, []);
 
-  // --- 3. DATA ORGANISATIE ---
+  // ── Data organisation ──────────────────────────────────────────────────────
   const units = [...new Set(allLessons.map(l => parseInt(l.Unit_ID)))]
     .sort((a, b) => a - b)
     .map(uId => {
@@ -136,9 +131,8 @@ function App() {
     setTimeout(() => setShowXpPopup(false), 1000);
   };
 
-  // --- 4. INTERACTIE ---
+  // ── Interaction handlers ───────────────────────────────────────────────────
   const startLesson = (uId, sId) => {
-    // Fix 3: update streak with proper date comparison on lesson start
     const { streak: newStreak, lastStreakDate: newDate } = calcNewStreak(streak, lastStreakDate);
     setStreak(newStreak);
     setLastStreakDate(newDate);
@@ -159,7 +153,7 @@ function App() {
     setSelectedOption(null);
     setSelectedWords([]);
     setIsCorrect(null);
-    setCorrectAnswerToShow(null); // Fix 1: reset on new lesson
+    setCorrectAnswerToShow(null);
     setIsFinished(false);
     setHearts(3);
     setCurrentLessonSet(questions);
@@ -168,7 +162,7 @@ function App() {
     setView('lesson');
   };
 
-  const addWord = (word) => { if (isCorrect === null) setSelectedWords([...selectedWords, word]); };
+  const addWord    = (word)  => { if (isCorrect === null) setSelectedWords([...selectedWords, word]); };
   const removeWord = (index) => {
     if (isCorrect === null) {
       const n = [...selectedWords];
@@ -181,16 +175,14 @@ function App() {
     const currentLesson = currentLessonSet[currentIndex];
     const userAnswer = currentLesson.Type === 'translate' ? selectedWords.join(' ') : selectedOption;
     const clean = (str) => str?.toLowerCase().trim().replace(/[.,!?;]$/, '');
-
     if (clean(userAnswer) === clean(currentLesson.Solution)) {
       setIsCorrect(true);
-      setCorrectAnswerToShow(null); // Fix 1: no need to show on correct
+      setCorrectAnswerToShow(null);
       addXp(10);
-      // Fix 4: play the question's audio on a correct answer
       playAudio(currentLesson.Audio_Slug);
     } else {
       setIsCorrect(false);
-      setCorrectAnswerToShow(currentLesson.Solution); // Fix 1: stash the right answer
+      setCorrectAnswerToShow(currentLesson.Solution);
       setHearts(prev => Math.max(0, prev - 1));
       setCurrentLessonSet(prev => [...prev, { ...currentLesson }]);
     }
@@ -202,12 +194,11 @@ function App() {
       setSelectedOption(null);
       setSelectedWords([]);
       setIsCorrect(null);
-      setCorrectAnswerToShow(null); // Fix 1: clear on advance
+      setCorrectAnswerToShow(null);
     } else {
       setIsFinished(true);
       confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
       addXp(hearts === 3 ? 50 : 25);
-
       const subUnitKey = `${activeUnit}-${activeSubUnit}`;
       if (activeUnit && !completedSubUnits.includes(subUnitKey)) {
         const nProgress = [...completedSubUnits, subUnitKey];
@@ -218,101 +209,117 @@ function App() {
     }
   };
 
-  // --- 5. RENDER HELPERS ---
+  // ── Tab renderers ──────────────────────────────────────────────────────────
   const renderHome = () => (
-    <div className="app-container" style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <section style={{ backgroundColor: 'var(--zgh-blue)', borderRadius: '25px', padding: '30px', color: 'white', margin: '20px 0 30px', boxShadow: '0 10px 20px rgba(0,153,204,0.2)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <h2 style={{ margin: 0, fontSize: '24px' }}>Salam, {userName}! {userAvatar}</h2>
-            <p style={{ fontSize: '18px', opacity: 0.9 }}>Level {currentLevel} • {streak} dagen streak</p>
-          </div>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '11px', fontWeight: 'bold' }}>NOG {xpToNextLevel} XP</div>
-            <div style={{ width: '80px', height: '8px', backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '10px', marginTop: '5px' }}>
-              <div style={{ width: `${((xp % 500) / 500) * 100}%`, height: '100%', backgroundColor: 'var(--zgh-yellow)', borderRadius: '10px' }} />
+    <div className="app-container">
+
+      {/* Hero card */}
+      <section className="home-hero">
+        <div className="home-hero__mascot">
+          <LionMascot size={175} />
+        </div>
+        <div className="home-hero__content">
+          <div className="home-hero__row">
+            <div>
+              <h2 className="home-hero__title">Salam, {userName}! {userAvatar}</h2>
+              <p className="home-hero__subtitle">Level {currentLevel} · {streak} dagen streak 🔥</p>
+            </div>
+            <div>
+              <div className="home-hero__xp-label">NOG {xpToNextLevel} XP</div>
+              <div className="home-hero__xp-track">
+                <div className="home-hero__xp-fill" style={{ width: `${((xp % 500) / 500) * 100}%` }} />
+              </div>
             </div>
           </div>
+          <button className="home-hero__cta" onClick={() => setActiveTab('lessons')}>
+            VERDER LEREN →
+          </button>
         </div>
-        <button onClick={() => setActiveTab('lessons')} style={{ backgroundColor: 'white', color: 'var(--zgh-blue)', border: 'none', padding: '15px 30px', borderRadius: '15px', fontWeight: 'bold', marginTop: '20px', cursor: 'pointer' }}>
-          VERDER LEREN
-        </button>
       </section>
-      <h3 style={{ fontSize: '20px', marginBottom: '20px' }}>Jouw Voortgang</h3>
-      <div style={{ display: 'grid', gap: '20px' }}>
+
+      {/* Progress section */}
+      <h3 className="home-section-title">Jouw Voortgang</h3>
+      <div className="home-progress-grid">
         {units.length > 0 ? units.slice(0, 2).map(unit => {
           const completedCount = unit.subUnits.filter(s => completedSubUnits.includes(`${unit.id}-${s.id}`)).length;
           const progress = Math.round((completedCount / unit.subUnits.length) * 100);
           return (
-            <div key={unit.id} style={{ border: '2px solid var(--zgh-gray)', padding: '20px', borderRadius: '20px', backgroundColor: 'white' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <span style={{ fontWeight: 'bold' }}>{unit.name}</span>
-                <span style={{ color: 'var(--zgh-blue)', fontWeight: 'bold' }}>{progress}%</span>
+            <div key={unit.id} className="home-progress-card">
+              <div className="home-progress-card__header">
+                <span className="home-progress-card__name">{unit.name}</span>
+                <span className="home-progress-card__pct">{progress}%</span>
               </div>
-              <div style={{ height: '12px', backgroundColor: 'var(--zgh-gray)', borderRadius: '10px', overflow: 'hidden' }}>
-                <div style={{ width: `${progress}%`, height: '100%', backgroundColor: 'var(--zgh-green)', transition: 'width 1s ease' }}></div>
+              <div className="home-progress-card__track">
+                <div className="home-progress-card__fill" style={{ width: `${progress}%` }} />
               </div>
             </div>
           );
         }) : <p>Lessen worden geladen...</p>}
       </div>
+
+      {/* Stats row */}
+      <div className="home-stats-row">
+        <div className="home-stat-card">
+          <div className="home-stat-card__icon"><Flame size={22} color="#D4681E" fill="#D4681E" /></div>
+          <div className="home-stat-card__value">{streak}</div>
+          <div className="home-stat-card__label">Streak</div>
+        </div>
+        <div className="home-stat-card">
+          <div className="home-stat-card__icon"><Zap size={22} color="#F5C300" fill="#F5C300" /></div>
+          <div className="home-stat-card__value">{xp}</div>
+          <div className="home-stat-card__label">XP</div>
+        </div>
+        <div className="home-stat-card">
+          <div className="home-stat-card__icon"><Medal size={22} color="#A86840" fill="#E8B87A" /></div>
+          <div className="home-stat-card__value">{currentLevel}</div>
+          <div className="home-stat-card__label">Level</div>
+        </div>
+        <div className="home-stat-card">
+          <div className="home-stat-card__icon"><CheckCircle2 size={22} color="#5AAD2A" fill="#D7F5B0" /></div>
+          <div className="home-stat-card__value">{completedSubUnits.length}</div>
+          <div className="home-stat-card__label">Lessen</div>
+        </div>
+      </div>
+
     </div>
   );
 
   const renderMap = () => (
-    <div className="app-container" style={{ maxWidth: '1100px', margin: '0 auto', padding: '20px 20px 100px' }}>
-      <header style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <h1 style={{ color: 'var(--zgh-blue)', fontSize: '36px', marginBottom: '5px' }}>Lessenoverzicht</h1>
-      </header>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 350px), 1fr))', gap: '30px' }}>
-        {units.map((unit, unitIdx) => {
-          const previousUnit = units[unitIdx - 1];
-          let isUnitLocked = previousUnit ? !previousUnit.subUnits.every(s => completedSubUnits.includes(`${previousUnit.id}-${s.id}`)) : false;
-          return (
-            <div key={unit.id} style={{ border: '2px solid var(--zgh-gray)', borderRadius: '25px', backgroundColor: 'white', overflow: 'hidden', opacity: isUnitLocked ? 0.6 : 1 }}>
-              <div style={{ padding: '25px', backgroundColor: '#f7f7f7', borderBottom: '2px solid var(--zgh-gray)', display: 'flex', justifyContent: 'space-between' }}>
-                <h2 style={{ margin: 0, fontSize: '18px' }}>Unit {unit.id}: {unit.name}</h2>
-                {isUnitLocked && <Lock size={18} color="#ccc" />}
-              </div>
-              <div style={{ padding: '15px' }}>
-                {unit.subUnits.map((sub, subIdx) => {
-                  const isDone = completedSubUnits.includes(`${unit.id}-${sub.id}`);
-                  const isSubLocked = isUnitLocked || (subIdx > 0 && !completedSubUnits.includes(`${unit.id}-${unit.subUnits[subIdx - 1].id}`));
-                  return (
-                    <div key={sub.id} onClick={() => !isSubLocked && startLesson(unit.id, sub.id)} style={{ display: 'flex', alignItems: 'center', gap: '15px', padding: '15px', cursor: isSubLocked ? 'default' : 'pointer', opacity: isSubLocked ? 0.5 : 1 }}>
-                      <div style={{ width: '35px', height: '35px', borderRadius: '50%', backgroundColor: isSubLocked ? '#ccc' : (isDone ? 'var(--zgh-green)' : (sub.isFinal ? 'var(--zgh-yellow)' : 'var(--zgh-blue)')), display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
-                        {isDone ? <CheckCircle size={18} /> : <Star size={18} />}
-                      </div>
-                      <span style={{ flex: 1, fontWeight: 'bold' }}>{sub.name}</span>
-                      {!isSubLocked && <ChevronRight size={18} color="#ccc" />}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
+    <LessonMap
+      units={units}
+      completedSubUnits={completedSubUnits}
+      onStartLesson={startLesson}
+    />
   );
 
   const renderProfile = () => (
-    <div className="app-container" style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <header style={{ textAlign: 'center', marginBottom: '30px' }}>
-        <div style={{ fontSize: '64px' }}>{userAvatar}</div>
-        <h2 style={{ color: 'var(--zgh-blue)', margin: '10px 0' }}>{userName}</h2>
-        <div style={{ color: 'var(--zgh-yellow)', fontWeight: 'bold' }}>LEVEL {currentLevel}</div>
+    <div className="app-container">
+      <header className="profile-header">
+        <LionMascot size={72} />
+        <h2 className="profile-name">{userName}</h2>
+        <div className="profile-level-badge">LEVEL {currentLevel}</div>
       </header>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-        <div style={{ border: '2px solid var(--zgh-gray)', padding: '20px', borderRadius: '20px', backgroundColor: 'white' }}>
-          <h4 style={{ color: 'var(--zgh-red)', marginTop: 0 }}>Naam</h4>
-          <input type="text" value={userName} onChange={(e) => { setUserName(e.target.value); localStorage.setItem('zgh_user_name', e.target.value); }} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '2px solid var(--zgh-gray)' }} />
+      <div className="profile-grid">
+        <div className="profile-card">
+          <h4 className="profile-card__title">Naam</h4>
+          <input
+            type="text"
+            className="profile-name-input"
+            value={userName}
+            onChange={(e) => { setUserName(e.target.value); localStorage.setItem('zgh_user_name', e.target.value); }}
+          />
         </div>
-        <div style={{ border: '2px solid var(--zgh-gray)', padding: '20px', borderRadius: '20px', backgroundColor: 'white' }}>
-          <h4 style={{ color: 'var(--zgh-red)', marginTop: 0 }}>Avatar</h4>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
+        <div className="profile-card">
+          <h4 className="profile-card__title">Avatar</h4>
+          <div className="profile-avatar-grid">
             {["🦁", "🏔️", "🌴", "🍲", "⭐", "🐪"].map(a => (
-              <button key={a} onClick={() => { setUserAvatar(a); localStorage.setItem('zgh_user_avatar', a); }} style={{ fontSize: '20px', padding: '10px', borderRadius: '10px', border: userAvatar === a ? '2px solid var(--zgh-green)' : '1px solid var(--zgh-gray)', backgroundColor: 'white' }}>{a}</button>
+              <button
+                key={a}
+                className={`profile-avatar-btn${userAvatar === a ? ' profile-avatar-btn--selected' : ''}`}
+                onClick={() => { setUserAvatar(a); localStorage.setItem('zgh_user_avatar', a); }}
+              >
+                {a}
+              </button>
             ))}
           </div>
         </div>
@@ -320,133 +327,113 @@ function App() {
     </div>
   );
 
-  // --- 6. HOOFD RENDER LOGICA ---
-  if (loading) return <div style={{ textAlign: 'center', padding: '100px' }}><h2>Atlas Academy laden...</h2></div>;
-
-  if (view === 'lesson') {
-    const currentLesson = currentLessonSet[currentIndex];
-    if (hearts === 0) return (
-      <div style={{ textAlign: 'center', padding: '100px' }}>
-        <h1>💔</h1>
-        <button onClick={() => setView('map')} style={{ padding: '15px 30px', borderRadius: '15px', backgroundColor: 'var(--zgh-blue)', color: 'white', border: 'none' }}>TERUG</button>
-      </div>
-    );
-    if (isFinished) return (
-      <div style={{ textAlign: 'center', padding: '100px' }}>
-        <Trophy size={80} color="gold" /><h1>Mabrouk! 🎉</h1>
-      </div>
-    );
-
+  // ── Main render ────────────────────────────────────────────────────────────
+  if (loading) {
     return (
-      <div className="app-container" style={{ maxWidth: '1100px', width: '95%', margin: '0 auto', padding: '20px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '40px' }}>
-          <X onClick={() => setView('map')} style={{ cursor: 'pointer' }} color="#afafaf" size={32} />
-          <div style={{ flex: 1, height: '12px', background: 'var(--zgh-gray)', borderRadius: '10px' }}>
-            <motion.div animate={{ width: `${(currentIndex / currentLessonSet.length) * 100}%` }} style={{ height: '100%', background: 'var(--zgh-green)', borderRadius: '10px' }} />
-          </div>
-          <div style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--zgh-red)' }}>❤️ {hearts}</div>
-        </div>
-        <div style={{ textAlign: 'center' }}>
-          {/* Fix 5: speaker button next to the question prompt */}
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', gap: '8px', marginBottom: '16px' }}>
-            <h2 style={{ fontSize: '28px', margin: 0 }}>
-              {currentLesson?.Type === 'translate' ? 'Vertaal deze zin:' : parsePrompt(currentLesson?.Prompt_NL)}
-            </h2>
-            <SpeakerButton slug={currentLesson?.Audio_Slug} />
-          </div>
-          {/* Fix 2: parsePrompt renders Image_Tag tokens in the Tarifit source sentence */}
-          {currentLesson?.Type === 'translate' && (
-            <div style={{ padding: '30px', backgroundColor: '#f7f7f7', borderRadius: '20px', marginBottom: '20px', fontSize: '24px', fontWeight: 'bold', color: 'var(--zgh-blue)' }}>
-              {parsePrompt(currentLesson?.Prompt_ZGH)}
-            </div>
-          )}
-          {currentLesson?.Type === 'translate' && (
-            <div style={{ minHeight: '60px', borderBottom: '2px solid var(--zgh-gray)', marginBottom: '30px', display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
-              {selectedWords.map((word, i) => (
-                <button key={i} onClick={() => removeWord(i)} style={{ padding: '20px', borderRadius: '12px', border: '1px solid var(--zgh-gray)', marginBottom: '20px', backgroundColor: 'white' }}>{word}</button>
-              ))}
-            </div>
-          )}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '15px' }}>
-            {currentLesson?.Options.map((opt, i) => {
-              const isUsed = currentLesson.Type === 'translate' && selectedWords.includes(opt);
-              return (
-                <button key={i} disabled={isUsed || isCorrect !== null} onClick={() => currentLesson.Type === 'translate' ? addWord(opt) : setSelectedOption(opt)}
-                  style={{ padding: '20px', borderRadius: '15px', border: `2px solid ${selectedOption === opt ? 'var(--zgh-blue)' : 'var(--zgh-gray)'}`, backgroundColor: isUsed ? 'var(--zgh-gray)' : 'white', fontWeight: 'bold' }}>
-                  {opt}
-                </button>
-              );
-            })}
-          </div>
-          {/* Fix 1: feedback bar now shows correct answer when wrong */}
-          <AnimatePresence>
-            {isCorrect !== null && (
-              <motion.div initial={{ y: 100 }} animate={{ y: 0 }} style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '30px', backgroundColor: isCorrect ? '#d7ffb8' : '#ffdfe0', zIndex: 2000 }}>
-                <div style={{ maxWidth: '600px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
-                  <div style={{ textAlign: 'left' }}>
-                    <span style={{ fontWeight: 'bold', color: isCorrect ? 'var(--zgh-green)' : 'var(--zgh-red)', display: 'block' }}>
-                      {isCorrect ? 'Goed gedaan! ✅' : 'Oeps! ❌'}
-                    </span>
-                    {/* Fix 1: show correct answer on wrong response */}
-                    {!isCorrect && correctAnswerToShow && (
-                      <span style={{ fontSize: '14px', color: 'var(--zgh-red)', display: 'block', marginTop: '4px' }}>
-                        Juist antwoord: <strong>{correctAnswerToShow}</strong>
-                      </span>
-                    )}
-                  </div>
-                  <button onClick={handleNext} style={{ padding: '12px 25px', borderRadius: '12px', border: 'none', backgroundColor: isCorrect ? 'var(--zgh-green)' : 'var(--zgh-red)', color: 'white', fontWeight: 'bold', flexShrink: 0 }}>
-                    VOLGENDE
-                  </button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          {isCorrect === null && (
-            <button disabled={!selectedOption && selectedWords.length === 0} onClick={handleCheck}
-              style={{ marginTop: '30px', padding: '15px 50px', borderRadius: '15px', backgroundColor: (selectedOption || selectedWords.length > 0) ? 'var(--zgh-green)' : 'var(--zgh-gray)', color: 'white', border: 'none', fontWeight: 'bold' }}>
-              CONTROLEER
-            </button>
-          )}
-        </div>
+      <div className="app-loading">
+        <LionMascot size={96} />
+        <h2>Atlas Academy laden...</h2>
       </div>
     );
   }
 
+  if (view === 'lesson') {
+    return (
+      <LessonView
+        currentLessonSet={currentLessonSet}
+        currentIndex={currentIndex}
+        hearts={hearts}
+        isCorrect={isCorrect}
+        isFinished={isFinished}
+        correctAnswerToShow={correctAnswerToShow}
+        selectedOption={selectedOption}
+        selectedWords={selectedWords}
+        onExit={() => setView('map')}
+        onCheck={handleCheck}
+        onNext={handleNext}
+        onSelectOption={setSelectedOption}
+        onAddWord={addWord}
+        onRemoveWord={removeWord}
+      />
+    );
+  }
+
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#fcfcfc' }}>
-      <header style={{ position: 'sticky', top: 0, backgroundColor: 'white', borderBottom: '2px solid var(--zgh-gray)', padding: '10px 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 1000 }}>
-        <div style={{ fontWeight: '900', color: 'var(--zgh-blue)', fontSize: '16px' }}>ATLAS ACADEMY</div>
-        <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', backgroundColor: '#f0f7ff', padding: '4px 10px', borderRadius: '20px' }}>
-            <Shield size={14} color="var(--zgh-blue)" fill="var(--zgh-blue)" />
-            <span style={{ fontWeight: '800', color: 'var(--zgh-blue)', fontSize: '13px' }}>{currentLevel}</span>
+    <div className="app-shell">
+
+      {/* ── Header ── */}
+      <header className="app-header">
+
+        {/* Left: brand */}
+        <div className="app-header__brand">
+          <img src="/lion-head.png" alt="" style={{ height: 32, width: 'auto', display: 'block' }} />
+          <span className="app-header__brand-text">ATLAS ACADEMY</span>
+        </div>
+
+        {/* Centre: language pill with Amazigh flag */}
+        <div className="app-header__language-pill">
+          <AmazighFlag height={18} />
+          <span className="app-header__language-name">Tarifit</span>
+        </div>
+
+        {/* Right: stats */}
+        <div className="app-header__stats">
+          {/* Streak */}
+          <div className="app-header__stat">
+            <Flame size={18} color="#D4681E" fill="#D4681E" />
+            <span className="app-header__stat-value app-header__stat-value--fire">{streak}</span>
           </div>
-          <div style={{ position: 'relative' }}>
-            <span style={{ fontWeight: 'bold', color: 'var(--zgh-yellow)', fontSize: '15px' }}>🏆 {xp}</span>
-            <AnimatePresence>
-              {showXpPopup && (
-                <motion.span initial={{ y: 0, opacity: 1 }} animate={{ y: -25, opacity: 0 }}
-                  style={{ position: 'absolute', right: 0, color: 'var(--zgh-green)', fontWeight: 'bold', fontSize: '12px' }}>
-                  +XP
-                </motion.span>
-              )}
-            </AnimatePresence>
+
+          {/* XP */}
+          <div className="app-header__stat app-header__stat--xp">
+            <Zap size={16} color="#F5C300" fill="#F5C300" />
+            <span className="app-header__stat-value app-header__stat-value--xp">
+              {xp}
+              <AnimatePresence>
+                {showXpPopup && (
+                  <motion.span
+                    className="app-header__xp-popup"
+                    initial={{ y: 0, opacity: 1 }}
+                    animate={{ y: -22, opacity: 0 }}
+                  >
+                    +XP
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </span>
           </div>
-          <span style={{ fontWeight: 'bold', color: 'var(--zgh-red)', fontSize: '15px' }}>🔥 {streak}</span>
         </div>
       </header>
-      <main style={{ paddingBottom: '90px' }}>
-        {activeTab === 'home' && renderHome()}
+
+      {/* ── Main content ── */}
+      <main className="app-main">
+        {activeTab === 'home'    && renderHome()}
         {activeTab === 'lessons' && renderMap()}
-        {activeTab === 'fun' && <div style={{ textAlign: 'center', padding: '100px' }}><h2>🎮 Mini-games komen eraan!</h2></div>}
+        {activeTab === 'fun'     && (
+          <div className="app-placeholder">
+            <LionMascot size={80} />
+            <h2>Mini-games komen eraan! 🎮</h2>
+          </div>
+        )}
         {activeTab === 'profile' && renderProfile()}
       </main>
-      <nav style={{ position: 'fixed', bottom: 0, left: 0, right: 0, height: '75px', backgroundColor: 'white', borderTop: '2px solid var(--zgh-gray)', display: 'flex', justifyContent: 'space-around', alignItems: 'center', zIndex: 1000 }}>
-        <button onClick={() => setActiveTab('home')} style={{ background: 'none', border: 'none', color: activeTab === 'home' ? 'var(--zgh-blue)' : '#ccc', cursor: 'pointer' }}><Home size={24} /><br /><span style={{ fontSize: '10px', fontWeight: 'bold' }}>HOME</span></button>
-        <button onClick={() => setActiveTab('lessons')} style={{ background: 'none', border: 'none', color: activeTab === 'lessons' ? 'var(--zgh-blue)' : '#ccc', cursor: 'pointer' }}><BookOpen size={24} /><br /><span style={{ fontSize: '10px', fontWeight: 'bold' }}>LESSEN</span></button>
-        <button onClick={() => setActiveTab('fun')} style={{ background: 'none', border: 'none', color: activeTab === 'fun' ? 'var(--zgh-blue)' : '#ccc', cursor: 'pointer' }}><Gamepad2 size={24} /><br /><span style={{ fontSize: '10px', fontWeight: 'bold' }}>FUN</span></button>
-        <button onClick={() => setActiveTab('profile')} style={{ background: 'none', border: 'none', color: activeTab === 'profile' ? 'var(--zgh-blue)' : '#ccc', cursor: 'pointer' }}><User size={24} /><br /><span style={{ fontSize: '10px', fontWeight: 'bold' }}>PROFIEL</span></button>
+
+      {/* ── Bottom nav ── */}
+      <nav className="app-nav">
+        <button className={`app-nav__btn${activeTab === 'home'    ? ' app-nav__btn--active' : ''}`} onClick={() => setActiveTab('home')}>
+          <Home size={24} /><span>HOME</span>
+        </button>
+        <button className={`app-nav__btn${activeTab === 'lessons' ? ' app-nav__btn--active' : ''}`} onClick={() => setActiveTab('lessons')}>
+          <BookOpen size={24} /><span>LESSEN</span>
+        </button>
+        <button className={`app-nav__btn${activeTab === 'fun'     ? ' app-nav__btn--active' : ''}`} onClick={() => setActiveTab('fun')}>
+          <Gamepad2 size={24} /><span>FUN</span>
+        </button>
+        <button className={`app-nav__btn${activeTab === 'profile' ? ' app-nav__btn--active' : ''}`} onClick={() => setActiveTab('profile')}>
+          <User size={24} /><span>PROFIEL</span>
+        </button>
       </nav>
+
     </div>
   );
 }

@@ -1,0 +1,274 @@
+/* ─── Full-screen states (no hearts / lesson complete) ───────────────────────── */
+.lesson-screen-center {
+  text-align: center;
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.lesson-complete__lion {
+  height: 220px;
+  width: auto;
+}
+
+.lesson-complete__title {
+  font-size: 32px;
+  color: var(--atlas-brown);
+  margin: 0;
+}
+
+.lesson-back-btn {
+  padding: 15px 30px;
+  border-radius: 15px;
+  background: linear-gradient(135deg, var(--atlas-brown), var(--atlas-primary));
+  color: white;
+  border: none;
+  font-weight: bold;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* ─── Active lesson wrapper ──────────────────────────────────────────────────── */
+.lesson-view {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+/* ─── Progress row ───────────────────────────────────────────────────────────── */
+.lesson-progress {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.lesson-progress__exit {
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.lesson-progress__track {
+  flex: 1;
+  height: 12px;
+  background: var(--zgh-gray);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.lesson-progress__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--atlas-primary), var(--atlas-gold));
+  border-radius: 10px;
+  /* width stays inline — JS-calculated percentage */
+}
+
+.lesson-progress__hearts {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--zgh-red);
+  flex-shrink: 0;
+}
+
+/* ─── Question area ──────────────────────────────────────────────────────────── */
+.lesson-question {
+  text-align: center;
+}
+
+.lesson-question__prompt-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.lesson-question__prompt {
+  font-size: 28px;
+  margin: 0;
+}
+
+/* ─── Translate — source sentence ────────────────────────────────────────────── */
+.lesson-translate-source {
+  padding: 30px;
+  background-color: var(--atlas-surface);
+  border-radius: 20px;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--atlas-brown);
+  border: 2px solid var(--atlas-gray);
+}
+
+/* ─── Translate — answer drop area ──────────────────────────────────────────── */
+.lesson-answer-area {
+  min-height: 60px;
+  border-bottom: 2px solid var(--zgh-gray);
+  margin-bottom: 30px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.lesson-answer-word {
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--zgh-gray);
+  margin-bottom: 20px;
+  background-color: white;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+/* ─── Options grid ───────────────────────────────────────────────────────────── */
+.lesson-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.lesson-option {
+  padding: 20px;
+  border-radius: 15px;
+  border: 2px solid var(--zgh-gray);
+  background-color: white;
+  font-weight: bold;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.lesson-option--selected {
+  border-color: var(--atlas-primary);
+  background-color: #FFF0E6;
+  color: var(--atlas-brown);
+}
+
+.lesson-option--used {
+  background-color: var(--zgh-gray);
+  cursor: not-allowed;
+}
+
+/* ─── Feedback bar ───────────────────────────────────────────────────────────── */
+.lesson-feedback {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 30px;
+  z-index: 2000;
+}
+
+.lesson-feedback--correct {
+  background-color: #d7ffb8;
+}
+
+.lesson-feedback--wrong {
+  background-color: #ffdfe0;
+}
+
+.lesson-feedback__inner {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.lesson-feedback__lion {
+  height: 64px;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.lesson-feedback__text {
+  flex: 1;
+}
+
+.lesson-feedback__label {
+  font-weight: bold;
+  display: block;
+}
+
+.lesson-feedback__label--correct {
+  color: var(--zgh-green);
+}
+
+.lesson-feedback__label--wrong {
+  color: var(--zgh-red);
+}
+
+.lesson-feedback__hint {
+  font-size: 14px;
+  color: var(--zgh-red);
+  display: block;
+  margin-top: 4px;
+}
+
+.lesson-feedback__next-btn {
+  padding: 12px 25px;
+  border-radius: 12px;
+  border: none;
+  color: white;
+  font-weight: bold;
+  font-family: inherit;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.lesson-feedback__next-btn--correct {
+  background-color: var(--zgh-green);
+}
+
+.lesson-feedback__next-btn--wrong {
+  background-color: var(--zgh-red);
+}
+
+/* ─── Check button ───────────────────────────────────────────────────────────── */
+.lesson-check-btn {
+  margin-top: 30px;
+  padding: 15px 50px;
+  border-radius: 15px;
+  color: white;
+  border: none;
+  font-weight: bold;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.lesson-check-btn--active {
+  background: linear-gradient(135deg, var(--atlas-brown), var(--atlas-primary));
+  cursor: pointer;
+}
+
+.lesson-check-btn--inactive {
+  background-color: var(--zgh-gray);
+  cursor: not-allowed;
+}
+
+/* ─── Speaker button ─────────────────────────────────────────────────────────── */
+.speaker-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 8px;
+  color: var(--atlas-primary);
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+/* ─── Prompt image ───────────────────────────────────────────────────────────── */
+.prompt-image {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 12px;
+  margin: 8px auto;
+  display: block;
+}
