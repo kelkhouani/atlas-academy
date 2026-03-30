@@ -110,10 +110,25 @@ export default function LessonView({
         {/* Prompt + speaker */}
         <div className="lesson-question__prompt-row">
           <h2 className="lesson-question__prompt">
-            {currentLesson?.Type === 'translate' ? 'Vertaal deze zin:' : parsePrompt(currentLesson?.Prompt_NL)}
+            {currentLesson?.Type === 'translate'
+              ? 'Vertaal deze zin:'
+              : currentLesson?.Type === 'image-choice'
+              ? (currentLesson?.Prompt_NL || 'Wat zie je?')
+              : parsePrompt(currentLesson?.Prompt_NL)}
           </h2>
           <SpeakerButton slug={currentLesson?.Audio_Slug} />
         </div>
+
+        {/* Image for image-choice exercises */}
+        {currentLesson?.Type === 'image-choice' && currentLesson?.Image_Slug && (
+          <div className="exercise-image-container">
+            <img
+              src={`/images/${currentLesson.Image_Slug}`}
+              alt="Wat zie je?"
+              className="exercise-image"
+            />
+          </div>
+        )}
 
         {/* Translate — ZGH source sentence */}
         {currentLesson?.Type === 'translate' && (

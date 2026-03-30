@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220">
+  <rect width="320" height="220" fill="#E8F5E9" rx="16"/>
+  <!-- Sky -->
+  <rect width="320" height="130" fill="#B3E5FC" rx="16"/>
+  <!-- Clouds -->
+  <ellipse cx="70" cy="45" rx="35" ry="20" fill="white" opacity="0.9"/>
+  <ellipse cx="100" cy="38" rx="30" ry="18" fill="white" opacity="0.9"/>
+  <ellipse cx="250" cy="55" rx="28" ry="16" fill="white" opacity="0.9"/>
+  <!-- Ground -->
+  <rect x="0" y="158" width="320" height="62" fill="#81C784"/>
+  <!-- House body -->
+  <rect x="90" y="110" width="140" height="90" fill="#FFCC80" rx="4"/>
+  <!-- Roof -->
+  <polygon points="75,115 160,55 245,115" fill="#E57373"/>
+  <polygon points="75,115 160,55 245,115" fill="none" stroke="#C62828" stroke-width="2"/>
+  <!-- Door -->
+  <rect x="140" y="152" width="40" height="48" fill="#8D6E63" rx="4"/>
+  <circle cx="175" cy="178" r="4" fill="#FFD54F"/>
+  <!-- Windows -->
+  <rect x="102" y="125" width="35" height="30" fill="#90CAF9" rx="4" stroke="#64B5F6" stroke-width="2"/>
+  <rect x="183" y="125" width="35" height="30" fill="#90CAF9" rx="4" stroke="#64B5F6" stroke-width="2"/>
+  <!-- Label -->
+  <rect x="80" y="184" width="160" height="28" rx="8" fill="white" opacity="0.9"/>
+  <text x="160" y="203" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#5D4037">tadath</text>
+</svg>

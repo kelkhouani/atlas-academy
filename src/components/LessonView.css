@@ -272,3 +272,20 @@
   margin: 8px auto;
   display: block;
 }
+
+/* ─── Image-choice exercise ──────────────────────────────────────────────────── */
+.exercise-image-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.exercise-image {
+  width: 100%;
+  max-width: 320px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 20px;
+  border: 3px solid var(--atlas-gray);
+  background-color: var(--atlas-surface);
+}
