@@ -83,12 +83,12 @@ function useWindowWidth() {
 
 // ─── Zigzag offsets: tighter on small phones, wider on larger screens ─────────
 function getOffsets(windowWidth) {
-  if (windowWidth < 400)  return [55,  85,  55,  0, -55,  -85, -55,  0];
-  if (windowWidth < 600)  return [80, 115,  80,  0, -80, -115, -80,  0];
-  return                         [100, 150, 100,  0, -100, -150, -100, 0];
+  if (windowWidth < 400)  return [70,  110,  70,  0, -70,  -110, -70,  0];
+  if (windowWidth < 600)  return [100, 145, 100,  0, -100, -145, -100, 0];
+  return                         [130, 180, 130,  0, -130, -180, -130, 0];
 }
 
-const ROW_H = 150;
+const ROW_H = 110;
 
 // ─── Tooltip ──────────────────────────────────────────────────────────────────
 function Tooltip({ data, onClose, onStart }) {
