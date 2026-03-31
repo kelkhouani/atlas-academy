@@ -88,7 +88,7 @@ function getOffsets(windowWidth) {
   return                         [130, 195, 130,  0, -130, -195, -130, 0];
 }
 
-const ROW_H = 115;
+const ROW_H = 110;
 
 // ─── Tooltip ──────────────────────────────────────────────────────────────────
 function Tooltip({ data, onClose, onStart }) {
