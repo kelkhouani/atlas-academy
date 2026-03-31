@@ -95,7 +95,16 @@ export default function LessonView({
   const isMatch     = currentLesson?.Type === 'match';
   const hasAnswer = selectedOption || selectedWords.length > 0 || (isTypeAnswer && typedAnswer?.trim().length > 0);
 
-  // ── Auto-focus input on any keypress; Enter to check or advance ───────────
+  // ── Enter to advance (all question types) ────────────────────────────────
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === 'Enter' && isCorrect !== null) onNext();
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [isCorrect, onNext]);
+
+  // ── Auto-focus input + Enter to check (type-answer only) ──────────────────
   const inputRef = useRef(null);
   useEffect(() => {
     if (!isTypeAnswer) return;
@@ -103,7 +112,6 @@ export default function LessonView({
       if (!inputRef.current) return;
       if (e.key === 'Enter') {
         if (isCorrect === null && typedAnswer?.trim().length > 0) onCheck();
-        else if (isCorrect !== null) onNext();
         return;
       }
       if (document.activeElement === inputRef.current) return;
@@ -113,7 +121,7 @@ export default function LessonView({
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [isTypeAnswer, isCorrect, typedAnswer, onCheck, onNext]);
+  }, [isTypeAnswer, isCorrect, typedAnswer, onCheck]);
 
   return (
     <div className="app-container lesson-view">
