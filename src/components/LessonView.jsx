@@ -190,12 +190,6 @@ export default function LessonView({
             placeholder="Typ hier je antwoord..."
             value={typedAnswer || ''}
             onChange={e => onTypeAnswer(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter') {
-                if (isCorrect === null && typedAnswer?.trim().length > 0) onCheck();
-                else if (isCorrect !== null) onNext();
-              }
-            }}
             disabled={isCorrect !== null}
             autoFocus
           />
