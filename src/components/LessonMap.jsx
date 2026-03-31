@@ -10,13 +10,13 @@ function PawIcon({ size = 26, color = 'white' }) {
       {/* Central pad */}
       <ellipse cx="16" cy="21.5" rx="7" ry="5.5" />
       {/* Outer left toe */}
-      <ellipse cx="7"    cy="14.5" rx="2.7" ry="3.4" transform="rotate(-20 7 14.5)" />
+      <ellipse cx="7"  cy="15"   rx="2.7" ry="3.4" transform="rotate(-20 7 15)" />
       {/* Inner left toe */}
-      <ellipse cx="11.5" cy="10.5" rx="2.7" ry="3.4" transform="rotate(-7 11.5 10.5)" />
+      <ellipse cx="13" cy="11"   rx="2.7" ry="3.4" transform="rotate(-7 13 11)" />
       {/* Inner right toe */}
-      <ellipse cx="20.5" cy="10.5" rx="2.7" ry="3.4" transform="rotate(7 20.5 10.5)" />
+      <ellipse cx="19" cy="11"   rx="2.7" ry="3.4" transform="rotate(7 19 11)" />
       {/* Outer right toe */}
-      <ellipse cx="25"   cy="14.5" rx="2.7" ry="3.4" transform="rotate(20 25 14.5)" />
+      <ellipse cx="25" cy="15"   rx="2.7" ry="3.4" transform="rotate(20 25 15)" />
     </svg>
   );
 }
@@ -285,18 +285,8 @@ export default function LessonMap({ units, completedSubUnits, onStartLesson }) {
                 <div key={sub.id} className="map-node-row" style={{ height: ROW_H }}>
                   <div className="map-node-wrapper" style={{ transform: `translateX(${offset}px)` }}>
 
-                    {/* START bounce badge or invisible spacer */}
-                    {isAvailable ? (
-                      <motion.div
-                        className="start-badge"
-                        animate={{ y: [0, -6, 0] }}
-                        transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
-                      >
-                        START
-                      </motion.div>
-                    ) : (
-                      <div className="start-badge--spacer" />
-                    )}
+                    {/* Invisible spacer so node stays vertically aligned */}
+                    <div className="start-badge--spacer" />
 
                     {/* Node circle — size/color/shadow stay inline */}
                     <motion.button
@@ -318,11 +308,21 @@ export default function LessonMap({ units, completedSubUnits, onStartLesson }) {
                         zIndex: 1,
                       }}
                     >
-                      {isLocked                              && <Lock    size={24} color="#aaa" />}
-                      {!isLocked && isDone && sub.isFinal    && <Trophy  size={32} color="white" />}
-                      {!isLocked && isDone && !sub.isFinal   && <PawIcon size={36} color="white" />}
-                      {!isLocked && !isDone && sub.isFinal   && <Trophy  size={32} color="white" />}
-                      {!isLocked && !isDone && !sub.isFinal  && <PawIcon size={36} color="white" />}
+                      {isLocked                            && <Lock   size={24} color="#aaa" />}
+                      {!isLocked && sub.isFinal            && <Trophy size={32} color="white" />}
+                      {!isLocked && !sub.isFinal && (
+                        <motion.div
+                          animate={isAvailable
+                            ? { rotate: [0, -25, 20, -15, 12, -8, 5, 0] }
+                            : {}}
+                          transition={isAvailable
+                            ? { repeat: Infinity, repeatDelay: 0.5, duration: 0.7, ease: 'easeInOut' }
+                            : {}}
+                          style={{ transformOrigin: '50% 80%', display: 'flex' }}
+                        >
+                          <PawIcon size={36} color="white" />
+                        </motion.div>
+                      )}
                     </motion.button>
 
                   </div>

@@ -80,7 +80,7 @@ export default function LessonView({
       if (noLessons || isFinished) return;
       if (hearts === 0)           { onExit(); return; }
       if (isCorrect !== null)     { onNext(); return; }
-      if (!isTypeAnswer && !isMatch && hasAnswer) onCheck();
+      if (!isMatch && hasAnswer) onCheck();
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
