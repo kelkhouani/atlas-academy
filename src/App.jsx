@@ -50,6 +50,44 @@ function playAudio(slug) {
   audio.play().catch(() => {});
 }
 
+// ─── Sound effects via Web Audio API ─────────────────────────────────────────
+function playSfx(type) {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const gain = ctx.createGain();
+    gain.connect(ctx.destination);
+
+    if (type === 'correct') {
+      // Cheerful ascending two-note chime
+      [[440, 0, 0.12], [660, 0.13, 0.25]].forEach(([freq, start, end]) => {
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + start);
+        const g = ctx.createGain();
+        g.gain.setValueAtTime(0.35, ctx.currentTime + start);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + end);
+        osc.connect(g);
+        g.connect(ctx.destination);
+        osc.start(ctx.currentTime + start);
+        osc.stop(ctx.currentTime + end);
+      });
+    } else {
+      // Low descending "oops" tone
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(300, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(180, ctx.currentTime + 0.3);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+      osc.connect(g);
+      g.connect(ctx.destination);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.35);
+    }
+  } catch (_) {}
+}
+
 // ─── Streak helpers ───────────────────────────────────────────────────────────
 function getTodayString() {
   return new Date().toISOString().slice(0, 10);
@@ -185,12 +223,14 @@ function App() {
       setIsCorrect(true);
       setCorrectAnswerToShow(null);
       addXp(10);
+      playSfx('correct');
       playAudio(currentLesson.Audio_Slug);
     } else {
       setIsCorrect(false);
       setCorrectAnswerToShow(currentLesson.Solution);
       setHearts(prev => Math.max(0, prev - 1));
       setCurrentLessonSet(prev => [...prev, { ...currentLesson }]);
+      playSfx('wrong');
     }
   };
 

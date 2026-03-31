@@ -1,0 +1,61 @@
+/* ─── Matching pairs wrapper ─────────────────────────────────────────────────── */
+.matching-pairs {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.matching-pairs__columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.matching-pairs__col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ─── Pair buttons ───────────────────────────────────────────────────────────── */
+.matching-pairs__btn {
+  width: 100%;
+  padding: 14px 10px;
+  border-radius: 14px;
+  border: 2px solid var(--atlas-gray);
+  background: white;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  color: #333;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s, transform 0.1s;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.matching-pairs__btn:active {
+  transform: scale(0.96);
+}
+
+/* Selected */
+.matching-pairs__btn--selected {
+  border-color: var(--atlas-primary);
+  background-color: #FFF0E6;
+  color: var(--atlas-brown);
+}
+
+/* Correct match */
+.matching-pairs__btn--matched {
+  border-color: var(--zgh-green);
+  background-color: #d7ffb8;
+  color: #2a7a00;
+  cursor: default;
+  opacity: 0.85;
+}
+
+/* Wrong flash */
+.matching-pairs__btn--wrong {
+  border-color: var(--zgh-red);
+  background-color: #ffdfe0;
+  color: var(--zgh-red);
+}

@@ -1,6 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trophy, Volume2 } from 'lucide-react';
+import MatchingPairs from './MatchingPairs';
 import './LessonView.css';
 
 // ─── Audio helper ─────────────────────────────────────────────────────────────
@@ -91,6 +92,7 @@ export default function LessonView({
 
   // ── Active lesson ──────────────────────────────────────────────────────────
   const isTypeAnswer = currentLesson?.Type === 'type-answer';
+  const isMatch     = currentLesson?.Type === 'match';
   const hasAnswer = selectedOption || selectedWords.length > 0 || (isTypeAnswer && typedAnswer?.trim().length > 0);
 
   // ── Auto-focus input on any keypress; Enter to check or advance ───────────
@@ -163,6 +165,17 @@ export default function LessonView({
           </div>
         )}
 
+        {/* Matching pairs exercise */}
+        {currentLesson?.Type === 'match' && (
+          <MatchingPairs
+            pairs={(currentLesson.Options || []).map(opt => {
+              const [tarifit, dutch] = opt.split(':');
+              return { tarifit: tarifit?.trim(), dutch: dutch?.trim() };
+            })}
+            onComplete={onNext}
+          />
+        )}
+
         {/* Translate — ZGH source sentence */}
         {currentLesson?.Type === 'translate' && (
           <div className="lesson-translate-source">
@@ -196,7 +209,7 @@ export default function LessonView({
         )}
 
         {/* Options grid — hidden for type-answer */}
-        {!isTypeAnswer && <div className="lesson-options">
+        {!isTypeAnswer && !isMatch && <div className="lesson-options">
           {currentLesson?.Options.map((opt, i) => {
             const isUsed     = currentLesson.Type === 'translate' && selectedWords.includes(opt);
             const isSelected = selectedOption === opt;
@@ -249,8 +262,8 @@ export default function LessonView({
           )}
         </AnimatePresence>
 
-        {/* Check button */}
-        {isCorrect === null && (
+        {/* Check button — hidden for match type (auto-completes) */}
+        {isCorrect === null && !isMatch && (
           <button
             disabled={!hasAnswer}
             onClick={onCheck}
