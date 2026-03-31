@@ -36,12 +36,19 @@ function MapPath({ nodes, innerWidth }) {
   });
 
   const totalH = NODES_PADDING_TOP + nodes.length * ROW_H;
-  // Smooth cubic bezier through all points — each segment curves gently
+  // Catmull-Rom → cubic bezier: tangents are shared across segments so the
+  // whole path flows as one continuous smooth curve, not separate pieces.
   const d = points.reduce((acc, p, i) => {
     if (i === 0) return `M ${p.x} ${p.y}`;
-    const prev = points[i - 1];
-    const cpY = (prev.y + p.y) / 2;
-    return `${acc} C ${prev.x} ${cpY}, ${p.x} ${cpY}, ${p.x} ${p.y}`;
+    const p0 = points[Math.max(0, i - 2)];
+    const p1 = points[i - 1];
+    const p2 = p;
+    const p3 = points[Math.min(points.length - 1, i + 1)];
+    const cp1x = p1.x + (p2.x - p0.x) / 6;
+    const cp1y = p1.y + (p2.y - p0.y) / 6;
+    const cp2x = p2.x - (p3.x - p1.x) / 6;
+    const cp2y = p2.y - (p3.y - p1.y) / 6;
+    return `${acc} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
   }, '');
 
   return (
@@ -76,9 +83,9 @@ function useWindowWidth() {
 
 // ─── Zigzag offsets: tighter on small phones, wider on larger screens ─────────
 function getOffsets(windowWidth) {
-  if (windowWidth < 400)  return [40,  65,  40,  0, -40,  -65, -40,  0];
-  if (windowWidth < 600)  return [60,  95,  60,  0, -60,  -95, -60,  0];
-  return                         [80, 130,  80,  0, -80, -130, -80,  0];
+  if (windowWidth < 400)  return [55,  85,  55,  0, -55,  -85, -55,  0];
+  if (windowWidth < 600)  return [80, 115,  80,  0, -80, -115, -80,  0];
+  return                         [100, 150, 100,  0, -100, -150, -100, 0];
 }
 
 const ROW_H = 110;
