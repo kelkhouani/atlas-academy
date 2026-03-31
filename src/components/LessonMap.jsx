@@ -116,6 +116,7 @@ function Tooltip({ data, onClose, onStart }) {
   // 6px clears the node's drop-shadow, +14px gives a comfortable visual gap
   const GAP = 20;
 
+
   return (
     <>
       {/* Tap-outside overlay — fixed so it always covers the full screen */}
