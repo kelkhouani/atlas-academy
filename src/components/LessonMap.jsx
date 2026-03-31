@@ -101,8 +101,10 @@ function Tooltip({ data, onClose, onStart }) {
 
   const vw = window.innerWidth;
 
-  // Card width — never wider than viewport minus 16px gutter each side
-  const cardW = Math.min(280, vw - 32);
+  // Card spans the full width of the zigzag (left-most to right-most node edge)
+  const peakOffset = vw < 400 ? 125 : vw < 600 ? 160 : 195;
+  const nodeSize   = 68;
+  const cardW      = Math.min(peakOffset * 2 + nodeSize, vw - 16);
 
   // Center the card in the viewport, then subtract the container's own left
   // offset so the absolute `left` value is correct relative to the container.
