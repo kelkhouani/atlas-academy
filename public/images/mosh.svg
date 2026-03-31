@@ -30,5 +30,5 @@
   <path d="M225 160 Q270 130 255 100 Q245 80 260 75" stroke="#D4956A" stroke-width="10" fill="none" stroke-linecap="round"/>
   <!-- Label -->
   <rect x="85" y="188" width="150" height="26" rx="8" fill="white" opacity="0.9"/>
-  <text x="160" y="206" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#7B2D00">mosh</text>
+  <text x="160" y="206" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#7B2D00">kat</text>
 </svg>

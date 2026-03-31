@@ -12,5 +12,5 @@
   <path d="M30 170 Q90 158 150 170 Q210 182 270 170" stroke="white" stroke-width="3" fill="none" opacity="0.5"/>
   <!-- Label -->
   <rect x="90" y="92" width="140" height="36" rx="10" fill="white" opacity="0.85"/>
-  <text x="160" y="116" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="bold" fill="#0096C7">aman</text>
+  <text x="160" y="116" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="bold" fill="#0096C7">water</text>
 </svg>

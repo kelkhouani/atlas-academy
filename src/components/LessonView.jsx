@@ -67,21 +67,54 @@ export default function LessonView({
   onTypeAnswer,
   onWrong,
 }) {
-  if (!currentLessonSet || currentLessonSet.length === 0) return null;
+  const currentLesson = currentLessonSet?.[currentIndex];
+  const isTypeAnswer  = currentLesson?.Type === 'type-answer';
+  const isMatch       = currentLesson?.Type === 'match';
+  const hasAnswer     = selectedOption || selectedWords.length > 0 || (isTypeAnswer && typedAnswer?.trim().length > 0);
+  const noLessons     = !currentLessonSet || currentLessonSet.length === 0;
 
-  const currentLesson = currentLessonSet[currentIndex];
+  // ── Global Enter handler — must be at top, before any early returns ────────
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key !== 'Enter') return;
+      if (noLessons || isFinished) return;
+      if (hearts === 0)           { onExit(); return; }
+      if (isCorrect !== null)     { onNext(); return; }
+      if (!isTypeAnswer && !isMatch && hasAnswer) onCheck();
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [noLessons, isFinished, hearts, isCorrect, isTypeAnswer, isMatch, hasAnswer, onExit, onNext, onCheck]);
 
-  // ── Out of hearts ──────────────────────────────────────────────────────────
+  // ── Auto-focus input + Enter to check (type-answer only) ──────────────────
+  const inputRef = useRef(null);
+  useEffect(() => {
+    if (!isTypeAnswer) return;
+    const handler = (e) => {
+      if (!inputRef.current) return;
+      if (e.key === 'Enter') return; // handled by global handler above
+      if (document.activeElement === inputRef.current) return;
+      if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        inputRef.current.focus();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [isTypeAnswer]);
+
+  // ── Early returns after all hooks ──────────────────────────────────────────
+  if (noLessons) return null;
+
   if (hearts === 0) {
     return (
       <div className="lesson-screen-center">
-        <h1>💔</h1>
+        <img src="/lion-crying.png" alt="Atlas Lion" className="lesson-complete__lion" />
+        <h1 className="lesson-complete__title">Oeps! 💔</h1>
         <button className="lesson-back-btn" onClick={onExit}>TERUG</button>
       </div>
     );
   }
 
-  // ── Lesson complete ────────────────────────────────────────────────────────
   if (isFinished) {
     return (
       <div className="lesson-screen-center">
@@ -92,40 +125,6 @@ export default function LessonView({
   }
 
   // ── Active lesson ──────────────────────────────────────────────────────────
-  const isTypeAnswer = currentLesson?.Type === 'type-answer';
-  const isMatch     = currentLesson?.Type === 'match';
-  const hasAnswer = selectedOption || selectedWords.length > 0 || (isTypeAnswer && typedAnswer?.trim().length > 0);
-
-  // ── Enter to check or advance (all question types) ───────────────────────
-  useEffect(() => {
-    const handler = (e) => {
-      if (e.key !== 'Enter') return;
-      if (isCorrect !== null) { onNext(); return; }
-      if (!isTypeAnswer && !isMatch && hasAnswer) onCheck();
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [isCorrect, isTypeAnswer, isMatch, hasAnswer, onNext, onCheck]);
-
-  // ── Auto-focus input + Enter to check (type-answer only) ──────────────────
-  const inputRef = useRef(null);
-  useEffect(() => {
-    if (!isTypeAnswer) return;
-    const handler = (e) => {
-      if (!inputRef.current) return;
-      if (e.key === 'Enter') {
-        if (isCorrect === null && typedAnswer?.trim().length > 0) onCheck();
-        return;
-      }
-      if (document.activeElement === inputRef.current) return;
-      if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey) {
-        inputRef.current.focus();
-      }
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [isTypeAnswer, isCorrect, typedAnswer, onCheck]);
-
   return (
     <div className="app-container lesson-view">
 
@@ -177,7 +176,7 @@ export default function LessonView({
         )}
 
         {/* Matching pairs exercise */}
-        {currentLesson?.Type === 'match' && (
+        {isMatch && (
           <MatchingPairs
             pairs={(currentLesson.Options || []).map(opt => {
               const [tarifit, dutch] = opt.split(':');
@@ -220,23 +219,25 @@ export default function LessonView({
           />
         )}
 
-        {/* Options grid — hidden for type-answer */}
-        {!isTypeAnswer && !isMatch && <div className="lesson-options">
-          {currentLesson?.Options.map((opt, i) => {
-            const isUsed     = currentLesson.Type === 'translate' && selectedWords.includes(opt);
-            const isSelected = selectedOption === opt;
-            return (
-              <button
-                key={i}
-                disabled={isUsed || isCorrect !== null}
-                onClick={() => currentLesson.Type === 'translate' ? onAddWord(opt) : onSelectOption(opt)}
-                className={`lesson-option${isSelected ? ' lesson-option--selected' : ''}${isUsed ? ' lesson-option--used' : ''}`}
-              >
-                {opt}
-              </button>
-            );
-          })}
-        </div>}
+        {/* Options grid — hidden for type-answer and match */}
+        {!isTypeAnswer && !isMatch && (
+          <div className="lesson-options">
+            {currentLesson?.Options.map((opt, i) => {
+              const isUsed     = currentLesson.Type === 'translate' && selectedWords.includes(opt);
+              const isSelected = selectedOption === opt;
+              return (
+                <button
+                  key={i}
+                  disabled={isUsed || isCorrect !== null}
+                  onClick={() => currentLesson.Type === 'translate' ? onAddWord(opt) : onSelectOption(opt)}
+                  className={`lesson-option${isSelected ? ' lesson-option--selected' : ''}${isUsed ? ' lesson-option--used' : ''}`}
+                >
+                  {opt}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         {/* Feedback bar */}
         <AnimatePresence>
@@ -247,7 +248,6 @@ export default function LessonView({
               className={`lesson-feedback${isCorrect ? ' lesson-feedback--correct' : ' lesson-feedback--wrong'}`}
             >
               <div className="lesson-feedback__inner">
-                {/* Lion reacts to the answer */}
                 <img
                   src={isCorrect ? '/lion-head.png' : '/lion-sad.png'}
                   alt=""
@@ -274,7 +274,7 @@ export default function LessonView({
           )}
         </AnimatePresence>
 
-        {/* Check button — hidden for match type (auto-completes) */}
+        {/* Check button — hidden for match type */}
         {isCorrect === null && !isMatch && (
           <button
             disabled={!hasAnswer}
