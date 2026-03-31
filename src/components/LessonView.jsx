@@ -95,14 +95,16 @@ export default function LessonView({
   const isMatch     = currentLesson?.Type === 'match';
   const hasAnswer = selectedOption || selectedWords.length > 0 || (isTypeAnswer && typedAnswer?.trim().length > 0);
 
-  // ── Enter to advance (all question types) ────────────────────────────────
+  // ── Enter to check or advance (all question types) ───────────────────────
   useEffect(() => {
     const handler = (e) => {
-      if (e.key === 'Enter' && isCorrect !== null) onNext();
+      if (e.key !== 'Enter') return;
+      if (isCorrect !== null) { onNext(); return; }
+      if (!isTypeAnswer && !isMatch && hasAnswer) onCheck();
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [isCorrect, onNext]);
+  }, [isCorrect, isTypeAnswer, isMatch, hasAnswer, onNext, onCheck]);
 
   // ── Auto-focus input + Enter to check (type-answer only) ──────────────────
   const inputRef = useRef(null);
