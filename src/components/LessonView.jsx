@@ -93,12 +93,17 @@ export default function LessonView({
   const isTypeAnswer = currentLesson?.Type === 'type-answer';
   const hasAnswer = selectedOption || selectedWords.length > 0 || (isTypeAnswer && typedAnswer?.trim().length > 0);
 
-  // ── Auto-focus input on any keypress for type-answer ──────────────────────
+  // ── Auto-focus input on any keypress; Enter to check or advance ───────────
   const inputRef = useRef(null);
   useEffect(() => {
     if (!isTypeAnswer) return;
     const handler = (e) => {
       if (!inputRef.current) return;
+      if (e.key === 'Enter') {
+        if (isCorrect === null && typedAnswer?.trim().length > 0) onCheck();
+        else if (isCorrect !== null) onNext();
+        return;
+      }
       if (document.activeElement === inputRef.current) return;
       if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey) {
         inputRef.current.focus();
@@ -106,7 +111,7 @@ export default function LessonView({
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [isTypeAnswer]);
+  }, [isTypeAnswer, isCorrect, typedAnswer, onCheck, onNext]);
 
   return (
     <div className="app-container lesson-view">
