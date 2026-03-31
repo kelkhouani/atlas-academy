@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trophy, Volume2 } from 'lucide-react';
 import './LessonView.css';
@@ -92,6 +93,21 @@ export default function LessonView({
   const isTypeAnswer = currentLesson?.Type === 'type-answer';
   const hasAnswer = selectedOption || selectedWords.length > 0 || (isTypeAnswer && typedAnswer?.trim().length > 0);
 
+  // ── Auto-focus input on any keypress for type-answer ──────────────────────
+  const inputRef = useRef(null);
+  useEffect(() => {
+    if (!isTypeAnswer) return;
+    const handler = (e) => {
+      if (!inputRef.current) return;
+      if (document.activeElement === inputRef.current) return;
+      if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        inputRef.current.focus();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [isTypeAnswer]);
+
   return (
     <div className="app-container lesson-view">
 
@@ -163,6 +179,7 @@ export default function LessonView({
         {/* Type-answer — text input */}
         {isTypeAnswer && (
           <input
+            ref={inputRef}
             className={`type-answer-input${isCorrect === true ? ' type-answer-input--correct' : isCorrect === false ? ' type-answer-input--wrong' : ''}`}
             type="text"
             placeholder="Typ hier je antwoord..."
