@@ -36,7 +36,13 @@ function MapPath({ nodes, innerWidth }) {
   });
 
   const totalH = NODES_PADDING_TOP + nodes.length * ROW_H;
-  const d = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+  // Smooth cubic bezier through all points — each segment curves gently
+  const d = points.reduce((acc, p, i) => {
+    if (i === 0) return `M ${p.x} ${p.y}`;
+    const prev = points[i - 1];
+    const cpY = (prev.y + p.y) / 2;
+    return `${acc} C ${prev.x} ${cpY}, ${p.x} ${cpY}, ${p.x} ${p.y}`;
+  }, '');
 
   return (
     <svg
@@ -48,7 +54,7 @@ function MapPath({ nodes, innerWidth }) {
         d={d}
         fill="none"
         stroke="rgba(168, 104, 64, 0.4)"
-        strokeWidth="3"
+        strokeWidth="5"
         strokeDasharray="10 8"
         strokeLinecap="round"
         strokeLinejoin="round"
