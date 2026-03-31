@@ -1,7 +1,25 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, Star, CheckCircle, Trophy } from 'lucide-react';
+import { Lock, CheckCircle, Trophy } from 'lucide-react';
 import './LessonMap.css';
+
+// ─── Lion paw SVG icon ────────────────────────────────────────────────────────
+function PawIcon({ size = 26, color = 'white' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 32" fill={color}>
+      {/* Central pad */}
+      <ellipse cx="16" cy="21.5" rx="7" ry="5.5" />
+      {/* Outer left toe */}
+      <ellipse cx="7"    cy="14.5" rx="2.7" ry="3.4" transform="rotate(-20 7 14.5)" />
+      {/* Inner left toe */}
+      <ellipse cx="11.5" cy="10.5" rx="2.7" ry="3.4" transform="rotate(-7 11.5 10.5)" />
+      {/* Inner right toe */}
+      <ellipse cx="20.5" cy="10.5" rx="2.7" ry="3.4" transform="rotate(7 20.5 10.5)" />
+      {/* Outer right toe */}
+      <ellipse cx="25"   cy="14.5" rx="2.7" ry="3.4" transform="rotate(20 25 14.5)" />
+    </svg>
+  );
+}
 
 // ─── Responsive window width hook ────────────────────────────────────────────
 function useWindowWidth() {
@@ -202,15 +220,22 @@ export default function LessonMap({ units, completedSubUnits, onStartLesson }) {
 
           {/* ── Nodes ── */}
           <div className="map-nodes">
-            {nodes.map(({ sub, offset, isDone, isLocked, isAvailable }) => {
-              // Size and colours are state-driven — stay inline
+            {nodes.map(({ sub, offset, isDone, isLocked, isAvailable }, idx) => {
               const size        = sub.isFinal ? 78 : 68;
-              // Soft, warm node colours — shadow is always a darker shade of the same hue
               const bgColor     = isLocked ? '#D8CEC8' : isDone ? '#82C46A' : sub.isFinal ? '#F0C840' : '#D4956A';
               const shadowColor = isLocked ? '#B0A49C' : isDone ? '#58A044' : sub.isFinal ? '#C09A18' : '#A86840';
 
               return (
                 <div key={sub.id} className="map-node-row" style={{ height: ROW_H }}>
+
+                  {/* Dashed connector line — runs full row height, behind the node */}
+                  {idx < nodes.length - 1 && (
+                    <div
+                      className="map-node-connector"
+                      style={{ left: `calc(50% + ${offset}px)` }}
+                    />
+                  )}
+
                   <div className="map-node-wrapper" style={{ transform: `translateX(${offset}px)` }}>
 
                     {/* START bounce badge or invisible spacer */}
@@ -242,12 +267,15 @@ export default function LessonMap({ units, completedSubUnits, onStartLesson }) {
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0,
+                        position: 'relative',
+                        zIndex: 1,
                       }}
                     >
-                      {isLocked  && <Lock        size={24} color="#aaa" />}
-                      {!isLocked && isDone        && <CheckCircle size={28} color="white" />}
-                      {!isLocked && !isDone && sub.isFinal  && <Trophy    size={28} color="white" />}
-                      {!isLocked && !isDone && !sub.isFinal && <Star      size={26} color="white" fill="white" />}
+                      {isLocked                              && <Lock      size={24} color="#aaa" />}
+                      {!isLocked && isDone && sub.isFinal    && <Trophy    size={28} color="white" />}
+                      {!isLocked && isDone && !sub.isFinal   && <PawIcon   size={28} color="white" />}
+                      {!isLocked && !isDone && sub.isFinal   && <Trophy    size={28} color="white" />}
+                      {!isLocked && !isDone && !sub.isFinal  && <PawIcon   size={28} color="white" />}
                     </motion.button>
 
                   </div>

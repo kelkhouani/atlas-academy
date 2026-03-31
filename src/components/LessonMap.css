@@ -70,11 +70,23 @@
 }
 
 .map-node-row {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   padding-top: 6px;
   /* height stays inline — uses ROW_H constant */
+}
+
+/* ─── Dashed connector between nodes ────────────────────────────────────────── */
+.map-node-connector {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 3px dashed rgba(168, 104, 64, 0.35);
+  transform: translateX(-50%);
+  z-index: 0;
 }
 
 .map-node-wrapper {
