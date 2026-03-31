@@ -403,6 +403,7 @@ function App() {
         onAddWord={addWord}
         onRemoveWord={removeWord}
         onTypeAnswer={setTypedAnswer}
+        onWrong={() => { playSfx('wrong'); setHearts(prev => Math.max(0, prev - 1)); }}
       />
     );
   }

@@ -9,7 +9,7 @@ function shuffle(arr) {
 // ─── MatchingPairs ────────────────────────────────────────────────────────────
 // Expects `pairs` as an array of { tarifit, dutch } objects
 // Calls onComplete() when all pairs are matched
-export default function MatchingPairs({ pairs, onComplete }) {
+export default function MatchingPairs({ pairs, onComplete, onWrong }) {
   const [leftItems, setLeftItems]   = useState([]);
   const [rightItems, setRightItems] = useState([]);
   const [selectedLeft, setSelectedLeft]   = useState(null);
@@ -44,6 +44,7 @@ export default function MatchingPairs({ pairs, onComplete }) {
     } else {
       // Wrong — flash red briefly then reset selection
       setWrongPair({ left: selectedLeft, right: selectedRight });
+      onWrong?.();
       setTimeout(() => {
         setWrongPair(null);
         setSelectedLeft(null);

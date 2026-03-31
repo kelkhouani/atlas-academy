@@ -65,6 +65,7 @@ export default function LessonView({
   onAddWord,
   onRemoveWord,
   onTypeAnswer,
+  onWrong,
 }) {
   if (!currentLessonSet || currentLessonSet.length === 0) return null;
 
@@ -183,6 +184,7 @@ export default function LessonView({
               return { tarifit: tarifit?.trim(), dutch: dutch?.trim() };
             })}
             onComplete={onNext}
+            onWrong={onWrong}
           />
         )}
 
