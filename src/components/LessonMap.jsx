@@ -21,6 +21,42 @@ function PawIcon({ size = 26, color = 'white' }) {
   );
 }
 
+// ─── Continuous dashed path connecting all nodes in a unit ───────────────────
+function MapPath({ nodes, innerWidth }) {
+  const NODES_PADDING_TOP = 16;
+  const ROW_PADDING_TOP   = 6;
+  const BADGE_H           = 24;
+  const BADGE_GAP         = 5;
+  const centerX           = innerWidth / 2;
+
+  const points = nodes.map(({ offset, sub }, idx) => {
+    const nodeSize = sub.isFinal ? 78 : 68;
+    const y = NODES_PADDING_TOP + idx * ROW_H + ROW_PADDING_TOP + BADGE_H + BADGE_GAP + nodeSize / 2;
+    return { x: centerX + offset, y };
+  });
+
+  const totalH = NODES_PADDING_TOP + nodes.length * ROW_H;
+  const d = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+
+  return (
+    <svg
+      style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none', zIndex: 0 }}
+      width={innerWidth}
+      height={totalH}
+    >
+      <path
+        d={d}
+        fill="none"
+        stroke="rgba(168, 104, 64, 0.4)"
+        strokeWidth="3"
+        strokeDasharray="10 8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 // ─── Responsive window width hook ────────────────────────────────────────────
 function useWindowWidth() {
   const [width, setWidth] = useState(window.innerWidth);
@@ -220,22 +256,17 @@ export default function LessonMap({ units, completedSubUnits, onStartLesson }) {
 
           {/* ── Nodes ── */}
           <div className="map-nodes">
-            {nodes.map(({ sub, offset, isDone, isLocked, isAvailable }, idx) => {
+
+            {/* Single continuous dashed path behind all nodes */}
+            <MapPath nodes={nodes} innerWidth={Math.min(windowWidth, 640) - (windowWidth >= 640 ? 64 : 32)} />
+
+            {nodes.map(({ sub, offset, isDone, isLocked, isAvailable }) => {
               const size        = sub.isFinal ? 78 : 68;
               const bgColor     = isLocked ? '#D8CEC8' : isDone ? '#82C46A' : sub.isFinal ? '#F0C840' : '#D4956A';
               const shadowColor = isLocked ? '#B0A49C' : isDone ? '#58A044' : sub.isFinal ? '#C09A18' : '#A86840';
 
               return (
                 <div key={sub.id} className="map-node-row" style={{ height: ROW_H }}>
-
-                  {/* Dashed connector line — runs full row height, behind the node */}
-                  {idx < nodes.length - 1 && (
-                    <div
-                      className="map-node-connector"
-                      style={{ left: `calc(50% + ${offset}px)` }}
-                    />
-                  )}
-
                   <div className="map-node-wrapper" style={{ transform: `translateX(${offset}px)` }}>
 
                     {/* START bounce badge or invisible spacer */}
@@ -271,11 +302,11 @@ export default function LessonMap({ units, completedSubUnits, onStartLesson }) {
                         zIndex: 1,
                       }}
                     >
-                      {isLocked                              && <Lock      size={24} color="#aaa" />}
-                      {!isLocked && isDone && sub.isFinal    && <Trophy    size={28} color="white" />}
-                      {!isLocked && isDone && !sub.isFinal   && <PawIcon   size={28} color="white" />}
-                      {!isLocked && !isDone && sub.isFinal   && <Trophy    size={28} color="white" />}
-                      {!isLocked && !isDone && !sub.isFinal  && <PawIcon   size={28} color="white" />}
+                      {isLocked                              && <Lock    size={24} color="#aaa" />}
+                      {!isLocked && isDone && sub.isFinal    && <Trophy  size={32} color="white" />}
+                      {!isLocked && isDone && !sub.isFinal   && <PawIcon size={36} color="white" />}
+                      {!isLocked && !isDone && sub.isFinal   && <Trophy  size={32} color="white" />}
+                      {!isLocked && !isDone && !sub.isFinal  && <PawIcon size={36} color="white" />}
                     </motion.button>
 
                   </div>
