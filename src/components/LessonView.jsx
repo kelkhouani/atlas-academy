@@ -55,12 +55,14 @@ export default function LessonView({
   correctAnswerToShow,
   selectedOption,
   selectedWords,
+  typedAnswer,
   onExit,
   onCheck,
   onNext,
   onSelectOption,
   onAddWord,
   onRemoveWord,
+  onTypeAnswer,
 }) {
   if (!currentLessonSet || currentLessonSet.length === 0) return null;
 
@@ -87,7 +89,8 @@ export default function LessonView({
   }
 
   // ── Active lesson ──────────────────────────────────────────────────────────
-  const hasAnswer = selectedOption || selectedWords.length > 0;
+  const isTypeAnswer = currentLesson?.Type === 'type-answer';
+  const hasAnswer = selectedOption || selectedWords.length > 0 || (isTypeAnswer && typedAnswer?.trim().length > 0);
 
   return (
     <div className="app-container lesson-view">
@@ -114,10 +117,19 @@ export default function LessonView({
               ? 'Vertaal deze zin:'
               : currentLesson?.Type === 'image-choice'
               ? (currentLesson?.Prompt_NL || 'Wat zie je?')
+              : currentLesson?.Type === 'type-answer'
+              ? (currentLesson?.Prompt_NL || 'Typ het antwoord:')
               : parsePrompt(currentLesson?.Prompt_NL)}
           </h2>
           <SpeakerButton slug={currentLesson?.Audio_Slug} />
         </div>
+
+        {/* Type-answer — word to translate */}
+        {isTypeAnswer && currentLesson?.Prompt_ZGH && (
+          <div className="lesson-translate-source">
+            {currentLesson.Prompt_ZGH}
+          </div>
+        )}
 
         {/* Image for image-choice exercises */}
         {currentLesson?.Type === 'image-choice' && currentLesson?.Image_Slug && (
@@ -148,8 +160,22 @@ export default function LessonView({
           </div>
         )}
 
-        {/* Options grid */}
-        <div className="lesson-options">
+        {/* Type-answer — text input */}
+        {isTypeAnswer && (
+          <input
+            className={`type-answer-input${isCorrect === true ? ' type-answer-input--correct' : isCorrect === false ? ' type-answer-input--wrong' : ''}`}
+            type="text"
+            placeholder="Typ hier je antwoord..."
+            value={typedAnswer || ''}
+            onChange={e => onTypeAnswer(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter' && typedAnswer?.trim().length > 0 && isCorrect === null) onCheck(); }}
+            disabled={isCorrect !== null}
+            autoFocus
+          />
+        )}
+
+        {/* Options grid — hidden for type-answer */}
+        {!isTypeAnswer && <div className="lesson-options">
           {currentLesson?.Options.map((opt, i) => {
             const isUsed     = currentLesson.Type === 'translate' && selectedWords.includes(opt);
             const isSelected = selectedOption === opt;
@@ -164,7 +190,7 @@ export default function LessonView({
               </button>
             );
           })}
-        </div>
+        </div>}
 
         {/* Feedback bar */}
         <AnimatePresence>

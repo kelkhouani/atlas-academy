@@ -273,6 +273,37 @@
   display: block;
 }
 
+/* ─── Type-answer exercise ───────────────────────────────────────────────────── */
+.type-answer-input {
+  display: block;
+  width: 100%;
+  padding: 18px 20px;
+  margin: 8px 0 24px;
+  font-size: 20px;
+  font-family: inherit;
+  border: 3px solid var(--atlas-gray);
+  border-radius: 16px;
+  background: white;
+  color: var(--atlas-brown);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+
+.type-answer-input:focus {
+  border-color: var(--atlas-primary);
+}
+
+.type-answer-input--correct {
+  border-color: var(--zgh-green);
+  background: #f0fff0;
+}
+
+.type-answer-input--wrong {
+  border-color: var(--zgh-red);
+  background: #fff0f0;
+}
+
 /* ─── Image-choice exercise ──────────────────────────────────────────────────── */
 .exercise-image-container {
   display: flex;

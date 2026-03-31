@@ -74,6 +74,7 @@ function App() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedWords, setSelectedWords] = useState([]);
+  const [typedAnswer, setTypedAnswer] = useState('');
   const [isCorrect, setIsCorrect] = useState(null);
   const [isFinished, setIsFinished] = useState(false);
   const [hearts, setHearts] = useState(3);
@@ -152,6 +153,7 @@ function App() {
     setCurrentIndex(0);
     setSelectedOption(null);
     setSelectedWords([]);
+    setTypedAnswer('');
     setIsCorrect(null);
     setCorrectAnswerToShow(null);
     setIsFinished(false);
@@ -173,7 +175,11 @@ function App() {
 
   const handleCheck = () => {
     const currentLesson = currentLessonSet[currentIndex];
-    const userAnswer = currentLesson.Type === 'translate' ? selectedWords.join(' ') : selectedOption;
+    const userAnswer = currentLesson.Type === 'translate'
+      ? selectedWords.join(' ')
+      : currentLesson.Type === 'type-answer'
+      ? typedAnswer
+      : selectedOption;
     const clean = (str) => str?.toLowerCase().trim().replace(/[.,!?;]$/, '');
     if (clean(userAnswer) === clean(currentLesson.Solution)) {
       setIsCorrect(true);
@@ -193,6 +199,7 @@ function App() {
       setCurrentIndex(currentIndex + 1);
       setSelectedOption(null);
       setSelectedWords([]);
+      setTypedAnswer('');
       setIsCorrect(null);
       setCorrectAnswerToShow(null);
     } else {
@@ -348,12 +355,14 @@ function App() {
         correctAnswerToShow={correctAnswerToShow}
         selectedOption={selectedOption}
         selectedWords={selectedWords}
+        typedAnswer={typedAnswer}
         onExit={() => setView('map')}
         onCheck={handleCheck}
         onNext={handleNext}
         onSelectOption={setSelectedOption}
         onAddWord={addWord}
         onRemoveWord={removeWord}
+        onTypeAnswer={setTypedAnswer}
       />
     );
   }

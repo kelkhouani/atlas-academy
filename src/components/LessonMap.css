@@ -134,6 +134,7 @@
   text-transform: uppercase;
   color: var(--atlas-primary);
   margin-bottom: 3px;
+  text-align: center;
 }
 
 .tooltip-card__sub-name {
@@ -141,6 +142,7 @@
   font-weight: 800;
   color: #222;
   margin-bottom: 14px;
+  text-align: center;
 }
 
 .tooltip-card__locked {
