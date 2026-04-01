@@ -73,6 +73,13 @@ export default function LessonView({
   const hasAnswer     = selectedOption || selectedWords.length > 0 || (isTypeAnswer && typedAnswer?.trim().length > 0);
   const noLessons     = !currentLessonSet || currentLessonSet.length === 0;
 
+  // ── Auto-select when there's only one option (select type) ───────────────
+  useEffect(() => {
+    if (currentLesson?.Type === 'select' && currentLesson?.Options?.length === 1) {
+      onSelectOption(currentLesson.Options[0]);
+    }
+  }, [currentLesson]);
+
   // ── Global Enter handler — must be at top, before any early returns ────────
   useEffect(() => {
     const handler = (e) => {
