@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, CheckCircle, Trophy } from 'lucide-react';
+import { Lock, CheckCircle, Trophy, Star } from 'lucide-react';
 import './LessonMap.css';
 
 // ─── Lion paw SVG icon ────────────────────────────────────────────────────────
