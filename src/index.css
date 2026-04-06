@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap');
+
 :root {
   /* ── Atlas Lion palette ──────────────────────────────────────────────────── */
   /* Primary: warm amber-orange (lion body) */
@@ -43,6 +45,15 @@
   --zgh-radius-sm: 12px;
   --zgh-radius-md: 20px;
   --zgh-radius-lg: 25px;
+
+  /* ── Fluid type scale ──────────────────────────────────────────────────── */
+  --type-xs:   clamp(10px, 2.2vw, 11px);
+  --type-sm:   clamp(12px, 2.5vw, 13px);
+  --type-base: clamp(14px, 3vw, 15px);
+  --type-md:   clamp(15px, 3.5vw, 17px);
+  --type-lg:   clamp(18px, 4vw, 22px);
+  --type-xl:   clamp(22px, 5vw, 28px);
+  --type-2xl:  clamp(28px, 6vw, 36px);
 }
 
 #root {
@@ -56,7 +67,7 @@
 
 body {
   margin: 0;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
   background-color: var(--atlas-cream);
   color: #3c3c3c;
 }
@@ -101,5 +112,18 @@ button {
 button:active {
   transform: translateY(2px);
   filter: brightness(0.9);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--atlas-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 

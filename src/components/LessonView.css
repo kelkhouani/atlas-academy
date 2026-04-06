@@ -55,6 +55,11 @@
   opacity: 1;
 }
 
+.lesson-progress__exit:active {
+  transform: none;
+  filter: none;
+}
+
 .lesson-progress__track {
   flex: 1;
   height: 14px;
@@ -121,7 +126,7 @@
 /* ─── Translate — answer drop area ──────────────────────────────────────────── */
 .lesson-answer-area {
   min-height: 60px;
-  border-bottom: 2px solid var(--zgh-gray);
+  border-bottom: 2px solid var(--atlas-gray);
   margin-bottom: 30px;
   display: flex;
   gap: 10px;
@@ -132,7 +137,7 @@
 .lesson-answer-word {
   padding: 20px;
   border-radius: 12px;
-  border: 1px solid var(--zgh-gray);
+  border: 1px solid var(--atlas-gray);
   margin-bottom: 20px;
   background-color: white;
   font-family: inherit;
@@ -150,7 +155,7 @@
 .lesson-option {
   padding: 18px 16px;
   border-radius: 15px;
-  border: 2px solid var(--zgh-gray);
+  border: 2px solid var(--atlas-gray);
   border-bottom-width: 4px;
   background-color: white;
   font-weight: 700;
@@ -183,7 +188,7 @@
 }
 
 .lesson-option--used {
-  background-color: var(--zgh-gray);
+  background-color: var(--atlas-gray);
   cursor: not-allowed;
   box-shadow: none;
   border-bottom-width: 2px;
@@ -372,12 +377,12 @@
 }
 
 .type-answer-input--correct {
-  border-color: var(--zgh-green);
+  border-color: var(--atlas-green);
   background: #f0fff0;
 }
 
 .type-answer-input--wrong {
-  border-color: var(--zgh-red);
+  border-color: var(--atlas-red);
   background: #fff0f0;
 }
 

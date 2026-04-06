@@ -3,7 +3,15 @@
   position: relative;
   width: 100%;
   margin: 0 auto;
-  /* padding & maxWidth stay inline — they're responsive JS values */
+  max-width: 100%;
+  padding: 8px 16px 140px;
+}
+
+@media (min-width: 640px) {
+  .lesson-map {
+    max-width: 640px;
+    padding: 8px 32px 140px;
+  }
 }
 
 /* ─── Unit banner ────────────────────────────────────────────────────────────── */
@@ -208,10 +216,10 @@
   filter: brightness(1.06);
 }
 
-.tooltip-card__btn--repeat {
+.tooltip-card__btn.tooltip-card__btn--repeat {
   background-color: white;
-  border: 2px solid var(--atlas-primary) !important;
-  border-bottom: 3px solid var(--atlas-primary-dark) !important;
+  border: 2px solid var(--atlas-primary);
+  border-bottom: 3px solid var(--atlas-primary-dark);
   color: var(--atlas-primary);
   margin-top: 10px;
 }
@@ -224,7 +232,7 @@
   height: 0;
   border-left: 12px solid transparent;
   border-right: 12px solid transparent;
-  border-bottom: 12px solid var(--zgh-gray);
+  border-bottom: 12px solid var(--atlas-gray);
   /* left stays inline — JS-calculated to aim at node */
 }
 

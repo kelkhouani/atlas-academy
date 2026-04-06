@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Lock, CheckCircle, Trophy, Star } from 'lucide-react';
 import './LessonMap.css';
 
@@ -74,9 +74,13 @@ function MapPath({ nodes, innerWidth }) {
 function useWindowWidth() {
   const [width, setWidth] = useState(window.innerWidth);
   useEffect(() => {
-    const handle = () => setWidth(window.innerWidth);
+    let timer;
+    const handle = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => setWidth(window.innerWidth), 16);
+    };
     window.addEventListener('resize', handle);
-    return () => window.removeEventListener('resize', handle);
+    return () => { window.removeEventListener('resize', handle); clearTimeout(timer); };
   }, []);
   return width;
 }
@@ -92,6 +96,13 @@ const ROW_H = 100;
 
 // ─── Tooltip ──────────────────────────────────────────────────────────────────
 function Tooltip({ data, onClose, onStart }) {
+  useEffect(() => {
+    if (!data) return;
+    const handler = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [data, onClose]);
+
   if (!data) return null;
 
   // nodeX:          viewport X of node centre (arrow aim)
@@ -191,6 +202,7 @@ export default function LessonMap({ units, completedSubUnits, onStartLesson }) {
   const windowWidth = useWindowWidth();
   const OFFSETS = getOffsets(windowWidth);
   const containerRef = useRef(null);
+  const prefersReducedMotion = useReducedMotion();
 
   const [tooltip, setTooltip] = useState(null);
 
@@ -235,15 +247,11 @@ export default function LessonMap({ units, completedSubUnits, onStartLesson }) {
     /*
       position:relative anchors the absolutely-positioned tooltip so it
       scrolls naturally with the map.
-      Padding and maxWidth are JS-responsive values — stay inline.
+      Padding and maxWidth are handled by CSS media queries in LessonMap.css.
     */
     <div
       ref={containerRef}
       className="lesson-map"
-      style={{
-        maxWidth: windowWidth >= 640 ? '640px' : '100%',
-        padding: windowWidth >= 640 ? '8px 32px 140px' : '8px 16px 140px',
-      }}
     >
       <AnimatePresence>
         {tooltip && (
@@ -312,10 +320,10 @@ export default function LessonMap({ units, completedSubUnits, onStartLesson }) {
                       {!isLocked && sub.isFinal            && <Trophy size={32} color="white" />}
                       {!isLocked && !sub.isFinal && (
                         <motion.div
-                          animate={isAvailable
+                          animate={isAvailable && !prefersReducedMotion
                             ? { rotate: [0, -25, 20, -15, 12, -8, 5, 0] }
                             : {}}
-                          transition={isAvailable
+                          transition={isAvailable && !prefersReducedMotion
                             ? { repeat: Infinity, repeatDelay: 0.5, duration: 0.7, ease: 'easeInOut' }
                             : {}}
                           style={{ transformOrigin: '50% 80%', display: 'flex' }}

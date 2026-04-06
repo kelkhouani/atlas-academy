@@ -146,7 +146,7 @@
 .app-nav__btn {
   background: none;
   border: none;
-  color: var(--atlas-gray-dark);
+  color: #6B5A52;
   cursor: pointer;
   padding: 8px 20px;
   display: flex;
@@ -278,7 +278,7 @@
 /* ─── Home — stats row ───────────────────────────────────────────────────────── */
 .home-stats-row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
   margin: 28px 0 8px;
 }
@@ -287,12 +287,17 @@
   background-color: white;
   border: 2px solid var(--atlas-gray);
   border-radius: 16px;
-  padding: 14px 8px;
+  padding: 20px 12px;
   text-align: center;
 }
 
+.home-stat-card:nth-child(1) { background-color: #FFF2E6; border-color: #F0D8C4; }
+.home-stat-card:nth-child(2) { background-color: #FFFAE0; border-color: #EDE8BE; }
+.home-stat-card:nth-child(3) { background-color: #F0F8E8; border-color: #C8E4B0; }
+.home-stat-card:nth-child(4) { background-color: #F5EEFF; border-color: #D8C4F0; }
+
 .home-stat-card__icon  { display: flex; justify-content: center; margin-bottom: 4px; }
-.home-stat-card__value { font-size: 20px; font-weight: 900; color: var(--atlas-brown); }
+.home-stat-card__value { font-size: 26px; font-weight: 900; color: var(--atlas-brown); }
 .home-stat-card__label { font-size: 10px; font-weight: 700; color: var(--atlas-gray-dark); margin-top: 2px; letter-spacing: 0.5px; text-transform: uppercase; }
 
 /* ─── Home — progress section ────────────────────────────────────────────────── */

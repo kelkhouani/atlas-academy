@@ -137,11 +137,19 @@ export default function LessonView({
 
       {/* Progress bar + hearts */}
       <div className="lesson-progress">
-        <X className="lesson-progress__exit" onClick={onExit} color="#afafaf" size={32} />
+        <button
+          className="lesson-progress__exit"
+          onClick={onExit}
+          aria-label="Lesson verlaten"
+          style={{ background: 'none', border: 'none', padding: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', borderRadius: 8 }}
+        >
+          <X color="#afafaf" size={32} />
+        </button>
         <div className="lesson-progress__track">
           <motion.div
             className="lesson-progress__fill"
-            animate={{ width: `${(currentIndex / currentLessonSet.length) * 100}%` }}
+            animate={{ scaleX: currentIndex / currentLessonSet.length }}
+            style={{ transformOrigin: 'left', width: '100%' }}
           />
         </div>
         <div className="lesson-progress__hearts">❤️ {hearts}</div>
@@ -214,16 +222,25 @@ export default function LessonView({
 
         {/* Type-answer — text input */}
         {isTypeAnswer && (
-          <input
-            ref={inputRef}
-            className={`type-answer-input${isCorrect === true ? ' type-answer-input--correct' : isCorrect === false ? ' type-answer-input--wrong' : ''}`}
-            type="text"
-            placeholder="Typ hier je antwoord..."
-            value={typedAnswer || ''}
-            onChange={e => onTypeAnswer(e.target.value)}
-            disabled={isCorrect !== null}
-            autoFocus
-          />
+          <>
+            <label
+              htmlFor="type-answer-input"
+              style={{ position: 'absolute', width: 1, height: 1, padding: 0, margin: -1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: 0 }}
+            >
+              Typ je antwoord
+            </label>
+            <input
+              id="type-answer-input"
+              ref={inputRef}
+              className={`type-answer-input${isCorrect === true ? ' type-answer-input--correct' : isCorrect === false ? ' type-answer-input--wrong' : ''}`}
+              type="text"
+              placeholder="Typ hier je antwoord..."
+              value={typedAnswer || ''}
+              onChange={e => onTypeAnswer(e.target.value)}
+              disabled={isCorrect !== null}
+              autoFocus
+            />
+          </>
         )}
 
         {/* Options grid — hidden for type-answer and match */}
@@ -252,6 +269,8 @@ export default function LessonView({
             <motion.div
               initial={{ y: 100 }}
               animate={{ y: 0 }}
+              aria-live="polite"
+              aria-atomic="true"
               className={`lesson-feedback${isCorrect ? ' lesson-feedback--correct' : ' lesson-feedback--wrong'}`}
             >
               <div className="lesson-feedback__inner">

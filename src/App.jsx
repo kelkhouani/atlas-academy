@@ -445,6 +445,7 @@ function App() {
                     className="app-header__xp-popup"
                     initial={{ y: 0, opacity: 1 }}
                     animate={{ y: -22, opacity: 0 }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                   >
                     +XP
                   </motion.span>
