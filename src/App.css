@@ -148,22 +148,31 @@
   border: none;
   color: var(--atlas-gray-dark);
   cursor: pointer;
-  padding: 8px 16px;
+  padding: 8px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
   font-family: inherit;
-  transition: color 0.15s;
+  transition: color 0.15s, transform 0.1s;
+  flex: 1;
+  border-top: 3px solid transparent;
+}
+
+.app-nav__btn:active {
+  transform: scale(0.92);
+  filter: none;
 }
 
 .app-nav__btn--active {
   color: var(--atlas-primary);
+  border-top-color: var(--atlas-primary);
 }
 
 .app-nav__btn span {
-  font-size: 10px;
-  font-weight: bold;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
 }
 
 /* ─── Home — hero card ───────────────────────────────────────────────────────── */
@@ -235,25 +244,35 @@
 }
 
 .home-hero__cta {
-  display: inline-block;
-  background-color: var(--atlas-brown);
+  display: block;
+  width: 100%;
+  background: linear-gradient(135deg, var(--atlas-brown), var(--atlas-primary));
   color: white;
   border: none;
-  padding: 10px 22px;
+  border-bottom: 4px solid rgba(0,0,0,0.25);
+  padding: 13px 22px;
   border-radius: 14px;
   font-weight: 800;
-  font-size: 13px;
-  margin-top: 14px;
+  font-size: 14px;
+  margin-top: 16px;
   cursor: pointer;
   font-family: inherit;
-  letter-spacing: 0.3px;
-  box-shadow: 0 4px 0 rgba(0,0,0,0.15);
-  transition: transform 0.1s, box-shadow 0.1s;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(168, 78, 20, 0.3);
+  transition: transform 0.08s, box-shadow 0.08s, filter 0.1s;
+}
+
+.home-hero__cta:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(168, 78, 20, 0.4);
 }
 
 .home-hero__cta:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 rgba(0,0,0,0.15);
+  transform: translateY(3px);
+  box-shadow: none;
+  border-bottom-width: 0;
+  filter: none;
 }
 
 /* ─── Home — stats row ───────────────────────────────────────────────────────── */

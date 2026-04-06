@@ -40,21 +40,28 @@
 .lesson-progress {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 40px;
+  gap: 14px;
+  margin-bottom: 36px;
 }
 
 .lesson-progress__exit {
   cursor: pointer;
   flex-shrink: 0;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
+.lesson-progress__exit:hover {
+  opacity: 1;
 }
 
 .lesson-progress__track {
   flex: 1;
-  height: 12px;
-  background: var(--zgh-gray);
+  height: 14px;
+  background: var(--atlas-gray);
   border-radius: 10px;
   overflow: hidden;
+  border: 1px solid var(--atlas-gray-dark);
 }
 
 .lesson-progress__fill {
@@ -65,10 +72,15 @@
 }
 
 .lesson-progress__hearts {
-  font-size: 24px;
-  font-weight: bold;
-  color: var(--zgh-red);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--atlas-red);
   flex-shrink: 0;
+  background: var(--atlas-red-light);
+  border: 2px solid #ffb5ae;
+  border-radius: 20px;
+  padding: 3px 10px;
+  letter-spacing: 1px;
 }
 
 /* ─── Question area ──────────────────────────────────────────────────────────── */
@@ -81,24 +93,29 @@
   justify-content: center;
   align-items: flex-start;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .lesson-question__prompt {
-  font-size: 28px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #2a2a2a;
   margin: 0;
+  line-height: 1.3;
 }
 
 /* ─── Translate — source sentence ────────────────────────────────────────────── */
 .lesson-translate-source {
-  padding: 30px;
+  padding: 22px 28px;
   background-color: var(--atlas-surface);
   border-radius: 20px;
   margin-bottom: 20px;
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 26px;
+  font-weight: 800;
   color: var(--atlas-brown);
   border: 2px solid var(--atlas-gray);
+  border-bottom: 4px solid var(--atlas-gray-dark);
+  letter-spacing: 0.3px;
 }
 
 /* ─── Translate — answer drop area ──────────────────────────────────────────── */
@@ -127,29 +144,50 @@
 .lesson-options {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px;
+  gap: 14px;
 }
 
 .lesson-option {
-  padding: 20px;
+  padding: 18px 16px;
   border-radius: 15px;
   border: 2px solid var(--zgh-gray);
+  border-bottom-width: 4px;
   background-color: white;
-  font-weight: bold;
+  font-weight: 700;
   font-family: inherit;
   font-size: inherit;
   cursor: pointer;
+  transition: transform 0.08s ease, border-color 0.12s ease, background-color 0.12s ease, box-shadow 0.08s ease;
+  box-shadow: 0 2px 0 var(--atlas-gray-dark);
+  color: #3c3c3c;
+}
+
+.lesson-option:hover:not(:disabled) {
+  border-color: var(--atlas-primary-light);
+  background-color: #FFF8F4;
+  transform: translateY(-1px);
+}
+
+.lesson-option:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: none;
+  border-bottom-width: 2px;
 }
 
 .lesson-option--selected {
   border-color: var(--atlas-primary);
+  border-bottom-color: var(--atlas-primary-dark);
   background-color: #FFF0E6;
   color: var(--atlas-brown);
+  box-shadow: 0 2px 0 var(--atlas-primary-dark);
 }
 
 .lesson-option--used {
   background-color: var(--zgh-gray);
   cursor: not-allowed;
+  box-shadow: none;
+  border-bottom-width: 2px;
+  opacity: 0.6;
 }
 
 /* ─── Feedback bar ───────────────────────────────────────────────────────────── */
@@ -158,20 +196,23 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 30px;
+  padding: 20px 24px 28px;
   z-index: 2000;
+  border-top: 3px solid transparent;
 }
 
 .lesson-feedback--correct {
-  background-color: #d7ffb8;
+  background-color: #E8FAD0;
+  border-top-color: var(--atlas-green);
 }
 
 .lesson-feedback--wrong {
-  background-color: #ffdfe0;
+  background-color: #FFE8E8;
+  border-top-color: var(--atlas-red);
 }
 
 .lesson-feedback__inner {
-  max-width: 600px;
+  max-width: 560px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -190,63 +231,99 @@
 }
 
 .lesson-feedback__label {
-  font-weight: bold;
+  font-weight: 800;
+  font-size: 17px;
   display: block;
 }
 
 .lesson-feedback__label--correct {
-  color: var(--zgh-green);
+  color: var(--atlas-green);
 }
 
 .lesson-feedback__label--wrong {
-  color: var(--zgh-red);
+  color: var(--atlas-red);
 }
 
 .lesson-feedback__hint {
-  font-size: 14px;
-  color: var(--zgh-red);
+  font-size: 13px;
+  color: #666;
   display: block;
-  margin-top: 4px;
+  margin-top: 3px;
 }
 
 .lesson-feedback__next-btn {
-  padding: 12px 25px;
-  border-radius: 12px;
+  padding: 14px 28px;
+  border-radius: 14px;
   border: none;
+  border-bottom: 4px solid transparent;
   color: white;
-  font-weight: bold;
+  font-weight: 800;
+  font-size: 15px;
   font-family: inherit;
   flex-shrink: 0;
   cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.lesson-feedback__next-btn:active {
+  transform: translateY(3px);
+  border-bottom-width: 0;
 }
 
 .lesson-feedback__next-btn--correct {
-  background-color: var(--zgh-green);
+  background-color: var(--atlas-green);
+  border-bottom-color: #3d7a1a;
+  box-shadow: 0 4px 10px rgba(90, 173, 42, 0.3);
 }
 
 .lesson-feedback__next-btn--wrong {
-  background-color: var(--zgh-red);
+  background-color: var(--atlas-red);
+  border-bottom-color: #8a1500;
+  box-shadow: 0 4px 10px rgba(204, 34, 0, 0.3);
 }
 
 /* ─── Check button ───────────────────────────────────────────────────────────── */
 .lesson-check-btn {
-  margin-top: 30px;
-  padding: 15px 50px;
-  border-radius: 15px;
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  margin: 24px auto 0;
+  padding: 17px 24px;
+  border-radius: 16px;
   color: white;
   border: none;
-  font-weight: bold;
+  border-bottom: 4px solid transparent;
+  font-weight: 800;
   font-family: inherit;
-  font-size: inherit;
+  font-size: 16px;
+  letter-spacing: 0.4px;
+  transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.1s ease;
 }
 
 .lesson-check-btn--active {
   background: linear-gradient(135deg, var(--atlas-brown), var(--atlas-primary));
+  border-bottom-color: rgba(0,0,0,0.25);
+  box-shadow: 0 4px 12px rgba(168, 78, 20, 0.35);
   cursor: pointer;
 }
 
+.lesson-check-btn--active:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(168, 78, 20, 0.4);
+}
+
+.lesson-check-btn--active:active {
+  transform: translateY(3px);
+  box-shadow: none;
+  border-bottom-width: 0;
+}
+
 .lesson-check-btn--inactive {
-  background-color: var(--zgh-gray);
+  background-color: var(--atlas-gray);
+  border-bottom-color: var(--atlas-gray-dark);
+  color: var(--atlas-gray-dark);
   cursor: not-allowed;
 }
 
