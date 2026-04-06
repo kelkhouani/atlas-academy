@@ -23,3 +23,20 @@ dist-ssr
 *.sln
 *.sw?
 .claude/worktrees/suspicious-brattain/
+
+# AI agent / IDE config folders
+.agent/
+.claude/
+.codebuddy/
+.codex/
+.continue/
+.cursor/
+.gemini/
+.github/
+.impeccable.md
+.kiro/
+.opencode/
+.qoder/
+.roo/
+.trae/
+.windsurf/
